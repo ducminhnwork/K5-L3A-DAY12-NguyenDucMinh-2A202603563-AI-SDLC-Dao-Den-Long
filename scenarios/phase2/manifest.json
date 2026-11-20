@@ -1,0 +1,449 @@
+[
+ {
+  "name": "dash",
+  "feature": "Lướt",
+  "night": 1,
+  "ticks": 40,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false
+  },
+  "inputs": {
+   "frames": [
+    {
+     "tick": 0,
+     "dash": true
+    },
+    {
+     "tick": 1,
+     "dash": false
+    }
+   ]
+  },
+  "expect": {
+   "event": "dash"
+  }
+ },
+ {
+  "name": "charm",
+  "feature": "Bùa Gió",
+  "night": 2,
+  "ticks": 10,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "player": {
+    "pos": [
+     34.5,
+     0,
+     0
+    ]
+   }
+  },
+  "inputs": {
+   "frames": []
+  },
+  "expect": {
+   "event": "charm_picked"
+  }
+ },
+ {
+  "name": "drifter-steal",
+  "feature": "Gió Lạc cướp",
+  "night": 2,
+  "ticks": 20,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "player": {
+    "carried": 7
+   },
+   "drifters": [
+    {
+     "id": "D1",
+     "pos": [
+      1.1,
+      1.5,
+      0
+     ],
+     "state": "chase"
+    }
+   ]
+  },
+  "inputs": {
+   "frames": []
+  },
+  "expect": {
+   "event": "drifter_steal"
+  }
+ },
+ {
+  "name": "drifter-drop",
+  "feature": "Gió Lạc thả đồ khi bị Toả Sáng",
+  "night": 2,
+  "ticks": 10,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "player": {
+    "carried": 3
+   },
+   "drifters": [
+    {
+     "id": "D1",
+     "pos": [
+      3,
+      1.5,
+      0
+     ],
+     "state": "flee",
+     "stolen": 3
+    }
+   ]
+  },
+  "inputs": {
+   "frames": [
+    {
+     "tick": 0,
+     "pulse": true
+    }
+   ]
+  },
+  "expect": {
+   "event": "drifter_drop"
+  }
+ },
+ {
+  "name": "pulse",
+  "feature": "Toả Sáng",
+  "night": 1,
+  "ticks": 20,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "player": {
+    "carried": 5
+   },
+   "shades": [
+    {
+     "id": "S1",
+     "pos": [
+      3,
+      1,
+      0
+     ]
+    }
+   ]
+  },
+  "inputs": {
+   "frames": [
+    {
+     "tick": 0,
+     "pulse": true
+    }
+   ]
+  },
+  "expect": {
+   "event": "pulse"
+  }
+ },
+ {
+  "name": "pause",
+  "feature": "Tạm dừng",
+  "night": 1,
+  "ticks": 30,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false
+  },
+  "inputs": {
+   "frames": [
+    {
+     "tick": 5,
+     "pause": true
+    },
+    {
+     "tick": 6,
+     "pause": false
+    },
+    {
+     "tick": 20,
+     "pause": true
+    },
+    {
+     "tick": 21,
+     "pause": false
+    }
+   ]
+  },
+  "expect": {
+   "event": "paused"
+  }
+ },
+ {
+  "name": "fall",
+  "feature": "Rơi khỏi đảo",
+  "night": 1,
+  "ticks": 200,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "player": {
+    "pos": [
+     45,
+     0,
+     0
+    ]
+   }
+  },
+  "inputs": {
+   "frames": []
+  },
+  "expect": {
+   "event": "player_hit"
+  }
+ },
+ {
+  "name": "pad-night2",
+  "feature": "Bục nhảy Đêm 2",
+  "night": 2,
+  "ticks": 120,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "player": {
+    "pos": [
+     20,
+     0,
+     18
+    ]
+   }
+  },
+  "inputs": {
+   "frames": []
+  },
+  "expect": {
+   "end_state": "playing",
+   "min_x": 45
+  }
+ },
+ {
+  "name": "pad-night3",
+  "feature": "Bục nhảy Đêm 3",
+  "night": 3,
+  "ticks": 150,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "player": {
+    "pos": [
+     0,
+     3,
+     13
+    ]
+   }
+  },
+  "inputs": {
+   "frames": []
+  },
+  "expect": {
+   "end_y": 6
+  }
+ },
+ {
+  "name": "safe-zone-push",
+  "feature": "Vùng an toàn: đẩy bóng, không sát thương",
+  "night": 1,
+  "ticks": 40,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "player": {
+    "carried": 10,
+    "flames": 9
+   },
+   "lanterns": [
+    {
+     "id": "L1",
+     "pos": [
+      0,
+      0,
+      1
+     ]
+    },
+    {
+     "id": "L2",
+     "pos": [
+      0,
+      0,
+      60
+     ],
+     "lit": true
+    },
+    {
+     "id": "L3",
+     "pos": [
+      0,
+      0,
+      61
+     ],
+     "lit": true
+    },
+    {
+     "id": "L4",
+     "pos": [
+      0,
+      0,
+      62
+     ],
+     "lit": true
+    },
+    {
+     "id": "L5",
+     "pos": [
+      0,
+      0,
+      63
+     ]
+    }
+   ],
+   "shades": [
+    {
+     "id": "S1",
+     "pos": [
+      0.5,
+      1,
+      0
+     ],
+     "state": "chase"
+    }
+   ]
+  },
+  "inputs": {
+   "frames": [
+    {
+     "tick": 0,
+     "interact": true
+    },
+    {
+     "tick": 1,
+     "interact": false
+    }
+   ]
+  },
+  "expect": {
+   "event": "lantern_lit",
+   "no_event": "player_hit"
+  }
+ },
+ {
+  "name": "wind-night3",
+  "feature": "Gió mạnh Đêm 3",
+  "night": 3,
+  "ticks": 2200,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "player": {
+    "pos": [
+     0,
+     0,
+     -30
+    ],
+    "flames": 99
+   },
+   "wind_enabled": true
+  },
+  "inputs": {
+   "frames": []
+  },
+  "expect": {
+   "wind_active_at": 1810
+  }
+ },
+ {
+  "name": "win-night1",
+  "feature": "Thắng Đêm",
+  "night": 1,
+  "ticks": 10,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "time_left_s": 100,
+   "player": {
+    "carried": 10,
+    "flames": 2
+   },
+   "lanterns": [
+    {
+     "id": "L1",
+     "pos": [
+      0,
+      0,
+      1
+     ]
+    },
+    {
+     "id": "L2",
+     "pos": [
+      0,
+      0,
+      60
+     ],
+     "lit": true
+    },
+    {
+     "id": "L3",
+     "pos": [
+      0,
+      0,
+      61
+     ],
+     "lit": true
+    },
+    {
+     "id": "L4",
+     "pos": [
+      0,
+      0,
+      62
+     ],
+     "lit": true
+    },
+    {
+     "id": "L5",
+     "pos": [
+      0,
+      0,
+      63
+     ],
+     "lit": true
+    }
+   ]
+  },
+  "inputs": {
+   "frames": [
+    {
+     "tick": 0,
+     "interact": true
+    }
+   ]
+  },
+  "expect": {
+   "event": "game_over",
+   "end_state": "won"
+  }
+ }
+]

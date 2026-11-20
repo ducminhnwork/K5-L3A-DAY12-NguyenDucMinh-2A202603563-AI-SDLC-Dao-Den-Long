@@ -17,7 +17,7 @@ const base = (out) => ['--seed', '1', '--night', '1', '--ticks', '30', '--out', 
 
 test('game.contract.json khớp TUNING thật sự dùng trong game', () => {
   const c = JSON.parse(fs.readFileSync('game.contract.json', 'utf8'));
-  assert.equal(c.contract_version, '1.0');
+  assert.equal(c.contract_version, '1.1');
   assert.deepEqual(c.tuning, JSON.parse(JSON.stringify(TUNING)));
   for (const k of ['team', 'build_cmd', 'run_cmd', 'headless_cmd']) assert.ok(c[k]);
 });
@@ -63,4 +63,23 @@ test('headless: cùng tham số cho file byte-giống nhau', () => {
   cli('--seed', '7', '--night', '1', '--ticks', '600', '--out', a);
   cli('--seed', '7', '--night', '1', '--ticks', '600', '--out', b);
   assert.equal(fs.readFileSync(a, 'utf8'), fs.readFileSync(b, 'utf8'));
+});
+
+test('headless: --night 1/2/3 chạy được, night 4 -> exit 2, id đèn L7 ở Đêm 2 -> exit 2', () => {
+  for (const n of ['1', '2', '3']) {
+    const out = path.join(tmp, `n${n}.jsonl`);
+    assert.equal(cli('--seed', '1', '--night', n, '--ticks', '20', '--out', out).status, 0);
+    assert.equal(JSON.parse(fs.readFileSync(out, 'utf8').split('\n')[0]).night, Number(n));
+  }
+  assert.equal(cli('--seed', '1', '--night', '4', '--ticks', '5', '--out', path.join(tmp, 'n4.jsonl')).status, 2);
+  const sc = w('l7.json', '{"lanterns":[{"id":"L7"}]}');
+  assert.equal(cli('--seed', '1', '--night', '2', '--ticks', '5', '--out', path.join(tmp, 'x.jsonl'), '--scenario', sc).status, 2);
+  assert.equal(cli('--seed', '1', '--night', '3', '--ticks', '5', '--out', path.join(tmp, 'y.jsonl'), '--scenario', sc).status, 0);
+});
+
+test('headless: scenario v1.1 (shade state sai, drifter state sai) -> exit 2', () => {
+  const o = path.join(tmp, 'v.jsonl');
+  assert.equal(cli(...base(o), '--scenario', w('s1.json', '{"shades":[{"pos":[1,1,1],"state":"dead"}]}')).status, 2);
+  assert.equal(cli(...base(o), '--scenario', w('s2.json', '{"drifters":[{"pos":[1,1,1],"state":"x"}]}')).status, 2);
+  assert.equal(cli(...base(o), '--inputs', w('s3.json', '{"frames":[{"tick":0,"dash":1}]}')).status, 2);
 });

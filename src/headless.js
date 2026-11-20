@@ -56,13 +56,13 @@ try {
   }
   const seed = toInt('seed', a.seed, 0);
   const night = toInt('night', a.night, 1);
-  if (night !== 1) throw new FormatError('Phase 1 chỉ hỗ trợ --night 1');
+  if (night > 3) throw new FormatError('--night phải là 1, 2 hoặc 3');
   const ticks = toInt('ticks', a.ticks, 0);
   const snapshotEvery = 'snapshot-every' in a ? toInt('snapshot-every', a['snapshot-every'], 1) : 10;
   const scenario = 'scenario' in a ? readJson(a.scenario, 'scenario') : {};
   const inputs = 'inputs' in a ? readJson(a.inputs, 'inputs') : { frames: [] };
 
-  const lines = runSim({ seed, scenario, inputs, ticks, snapshotEvery });
+  const lines = runSim({ seed, night, scenario, inputs, ticks, snapshotEvery });
   fs.writeFileSync(a.out, lines.join('\n') + '\n');
   process.exit(0);
 } catch (e) {

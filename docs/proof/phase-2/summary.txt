@@ -1,0 +1,17 @@
+tests exit=0
+PASS dash (Lướt) 
+PASS charm (Bùa Gió) 
+PASS drifter-steal (Gió Lạc cướp) 
+PASS drifter-drop (Gió Lạc thả đồ khi bị Toả Sáng) 
+PASS pulse (Toả Sáng) 
+PASS pause (Tạm dừng) 
+PASS fall (Rơi khỏi đảo) 
+PASS pad-night2 (Bục nhảy Đêm 2) 
+PASS pad-night3 (Bục nhảy Đêm 3) 
+PASS safe-zone-push (Vùng an toàn: đẩy bóng, không sát thương) 
+PASS wind-night3 (Gió mạnh Đêm 3) 
+PASS win-night1 (Thắng Đêm) 
+PASS determinism (night 3, seed 7, 3000 tick)
+perf night 1: 0.30 s (ngưỡng 30 s) exit=0
+perf night 2: 0.24 s (ngưỡng 30 s) exit=0
+perf night 3: 0.39 s (ngưỡng 30 s) exit=0

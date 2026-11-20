@@ -1,0 +1,394 @@
+TAP version 13
+# Subtest: game.contract.json khớp TUNING thật sự dùng trong game
+ok 1 - game.contract.json khớp TUNING thật sự dùng trong game
+  ---
+  duration_ms: 2.36722
+  type: 'test'
+  ...
+# Subtest: headless: exit 0, dòng cuối là end, snapshot mỗi 10 tick mặc định
+ok 2 - headless: exit 0, dòng cuối là end, snapshot mỗi 10 tick mặc định
+  ---
+  duration_ms: 36.484098
+  type: 'test'
+  ...
+# Subtest: headless: --snapshot-every tuỳ chỉnh
+ok 3 - headless: --snapshot-every tuỳ chỉnh
+  ---
+  duration_ms: 51.807901
+  type: 'test'
+  ...
+# Subtest: headless: inputs hỏng -> exit 2 và thông báo ở stderr
+ok 4 - headless: inputs hỏng -> exit 2 và thông báo ở stderr
+  ---
+  duration_ms: 43.845455
+  type: 'test'
+  ...
+# Subtest: headless: JSON không hợp lệ / move ngoài [-1,1] / scenario sai -> exit 2
+ok 5 - headless: JSON không hợp lệ / move ngoài [-1,1] / scenario sai -> exit 2
+  ---
+  duration_ms: 167.815561
+  type: 'test'
+  ...
+# Subtest: headless: thiếu tham số / file không tồn tại -> mã khác 0
+ok 6 - headless: thiếu tham số / file không tồn tại -> mã khác 0
+  ---
+  duration_ms: 82.7968
+  type: 'test'
+  ...
+# Subtest: headless: cùng tham số cho file byte-giống nhau
+ok 7 - headless: cùng tham số cho file byte-giống nhau
+  ---
+  duration_ms: 123.286298
+  type: 'test'
+  ...
+# Subtest: headless: --night 1/2/3 chạy được, night 4 -> exit 2, id đèn L7 ở Đêm 2 -> exit 2
+ok 8 - headless: --night 1/2/3 chạy được, night 4 -> exit 2, id đèn L7 ở Đêm 2 -> exit 2
+  ---
+  duration_ms: 257.711874
+  type: 'test'
+  ...
+# Subtest: headless: scenario v1.1 (shade state sai, drifter state sai) -> exit 2
+ok 9 - headless: scenario v1.1 (shade state sai, drifter state sai) -> exit 2
+  ---
+  duration_ms: 126.837745
+  type: 'test'
+  ...
+# Subtest: Tỏa Sáng: khoảng cách 3D và điểm
+ok 10 - Tỏa Sáng: khoảng cách 3D và điểm
+  ---
+  duration_ms: 5.996874
+  type: 'test'
+  ...
+# Subtest: Tỏa Sáng: choáng 120 tick, đẩy 4 m trong 15 tick, hồi chiêu 3 s, làm mới khi pulse lại
+ok 11 - Tỏa Sáng: choáng 120 tick, đẩy 4 m trong 15 tick, hồi chiêu 3 s, làm mới khi pulse lại
+  ---
+  duration_ms: 14.66451
+  type: 'test'
+  ...
+# Subtest: Tỏa Sáng: không đủ 3 đom đóm không kích hoạt; bóng trùng vị trí bị đẩy theo +X
+ok 12 - Tỏa Sáng: không đủ 3 đom đóm không kích hoạt; bóng trùng vị trí bị đẩy theo +X
+  ---
+  duration_ms: 1.25943
+  type: 'test'
+  ...
+# Subtest: Tỏa Sáng: choáng hết sau 120 tick
+ok 13 - Tỏa Sáng: choáng hết sau 120 tick
+  ---
+  duration_ms: 3.587637
+  type: 'test'
+  ...
+# Subtest: Bóng Mực: lịch sinh Đêm 1 (2 con ở tick 300, rồi 1 con mỗi 480), id S1.., trạng thái spawning
+ok 14 - Bóng Mực: lịch sinh Đêm 1 (2 con ở tick 300, rồi 1 con mỗi 480), id S1.., trạng thái spawning
+  ---
+  duration_ms: 65.773577
+  type: 'test'
+  ...
+# Subtest: Bóng Mực: sinh cách người chơi >= 15 m, tối đa 6 ở Đêm 1
+ok 15 - Bóng Mực: sinh cách người chơi >= 15 m, tối đa 6 ở Đêm 1
+  ---
+  duration_ms: 429.743699
+  type: 'test'
+  ...
+# Subtest: Bóng Mực: phát hiện 12 m, bỏ đuổi 18 m, tốc độ 4 m/s
+ok 16 - Bóng Mực: phát hiện 12 m, bỏ đuổi 18 m, tốc độ 4 m/s
+  ---
+  duration_ms: 2.246632
+  type: 'test'
+  ...
+# Subtest: Bị đánh: -1 lửa, rơi floor(mang/2) vào vành 1.5-2.5 m, TTL 480, bất tử 90 tick, bóng recoil 2 m / 60 tick
+ok 17 - Bị đánh: -1 lửa, rơi floor(mang/2) vào vành 1.5-2.5 m, TTL 480, bất tử 90 tick, bóng recoil 2 m / 60 tick
+  ---
+  duration_ms: 8.110806
+  type: 'test'
+  ...
+# Subtest: Bị đánh: bóng chạm lúc Mây bất tử không làm gì (không recoil)
+ok 18 - Bị đánh: bóng chạm lúc Mây bất tử không làm gì (không recoil)
+  ---
+  duration_ms: 0.572651
+  type: 'test'
+  ...
+# Subtest: Bị đánh: tối đa 1 lần mất Ngọn Lửa mỗi tick
+ok 19 - Bị đánh: tối đa 1 lần mất Ngọn Lửa mỗi tick
+  ---
+  duration_ms: 0.629316
+  type: 'test'
+  ...
+# Subtest: Bóng đang choáng / spawning / recoil không gây sát thương
+ok 20 - Bóng đang choáng / spawning / recoil không gây sát thương
+  ---
+  duration_ms: 0.752383
+  type: 'test'
+  ...
+# Subtest: Vùng an toàn: bóng ngoài bị chặn ở mép 6 m
+ok 21 - Vùng an toàn: bóng ngoài bị chặn ở mép 6 m
+  ---
+  duration_ms: 24.301372
+  type: 'test'
+  ...
+# Subtest: Vùng an toàn: bóng đang ở trong lúc đèn thắp bị đẩy ra mép trong <= 30 tick, không gây sát thương
+ok 22 - Vùng an toàn: bóng đang ở trong lúc đèn thắp bị đẩy ra mép trong <= 30 tick, không gây sát thương
+  ---
+  duration_ms: 1.509442
+  type: 'test'
+  ...
+# Subtest: Rơi khỏi đảo: -1 lửa, mất hết đom đóm, chờ 60 tick rồi hồi sinh bất tử 90 tick
+ok 23 - Rơi khỏi đảo: -1 lửa, mất hết đom đóm, chờ 60 tick rồi hồi sinh bất tử 90 tick
+  ---
+  duration_ms: 3.933036
+  type: 'test'
+  ...
+# Subtest: Rơi khỏi đảo: hết lửa thì thua ngay, không hồi sinh
+ok 24 - Rơi khỏi đảo: hết lửa thì thua ngay, không hồi sinh
+  ---
+  duration_ms: 1.406753
+  type: 'test'
+  ...
+# Subtest: Rơi khỏi đảo: bỏ qua bất tử
+ok 25 - Rơi khỏi đảo: bỏ qua bất tử
+  ---
+  duration_ms: 1.582306
+  type: 'test'
+  ...
+# Subtest: Tạm dừng: tick tăng, sim_tick/thời gian/hồi chiêu đứng yên, snapshot state=paused
+ok 26 - Tạm dừng: tick tăng, sim_tick/thời gian/hồi chiêu đứng yên, snapshot state=paused
+  ---
+  duration_ms: 0.614152
+  type: 'test'
+  ...
+# Subtest: Bùa Gió: nhặt, 7.2 m/s, Lướt không hồi chiêu, hết sau 600 tick, hiện lại sau 2700 tick
+ok 27 - Bùa Gió: nhặt, 7.2 m/s, Lướt không hồi chiêu, hết sau 600 tick, hiện lại sau 2700 tick
+  ---
+  duration_ms: 91.710628
+  type: 'test'
+  ...
+# Subtest: Bùa Gió: nhặt lại thì làm mới; xa quá không nhặt
+ok 28 - Bùa Gió: nhặt lại thì làm mới; xa quá không nhặt
+  ---
+  duration_ms: 0.837018
+  type: 'test'
+  ...
+# Subtest: Đêm 1: đảo bán kính 40, ngoài đó là biển mây (rơi)
+ok 29 - Đêm 1: đảo bán kính 40, ngoài đó là biển mây (rơi)
+  ---
+  duration_ms: 19.189799
+  type: 'test'
+  ...
+# Subtest: Đêm 1: đèn L1..L5 đúng toạ độ chuẩn
+ok 30 - Đêm 1: đèn L1..L5 đúng toạ độ chuẩn
+  ---
+  duration_ms: 1.565807
+  type: 'test'
+  ...
+# Subtest: Đêm 2: 6 đèn, đi qua cầu tre sang đảo B, rơi nếu lệch khỏi cầu
+ok 31 - Đêm 2: 6 đèn, đi qua cầu tre sang đảo B, rơi nếu lệch khỏi cầu
+  ---
+  duration_ms: 30.5681
+  type: 'test'
+  ...
+# Subtest: Đêm 2: bục nhảy bắn Mây sang đảo kia (Y 14, ngang 24 m/s), vận tốc giữ tới khi chạm đất, phím không ghi đè
+ok 32 - Đêm 2: bục nhảy bắn Mây sang đảo kia (Y 14, ngang 24 m/s), vận tốc giữ tới khi chạm đất, phím không ghi đè
+  ---
+  duration_ms: 5.492499
+  type: 'test'
+  ...
+# Subtest: Đêm 2: bục thứ hai bắn ngược về đảo A
+ok 33 - Đêm 2: bục thứ hai bắn ngược về đảo A
+  ---
+  duration_ms: 4.543421
+  type: 'test'
+  ...
+# Subtest: Đêm 2: lướt giữa không trung vẫn được, giữ nguyên độ cao 12 tick rồi tiếp tục quỹ đạo phóng
+ok 34 - Đêm 2: lướt giữa không trung vẫn được, giữ nguyên độ cao 12 tick rồi tiếp tục quỹ đạo phóng
+  ---
+  duration_ms: 8.283718
+  type: 'test'
+  ...
+# Subtest: Đêm 2: thời lượng 330 s, Bóng Mực sinh mỗi 420 tick, tối đa 8
+ok 35 - Đêm 2: thời lượng 330 s, Bóng Mực sinh mỗi 420 tick, tối đa 8
+  ---
+  duration_ms: 602.661291
+  type: 'test'
+  ...
+# Subtest: Đêm 3: 7 đèn, 30 điểm đom đóm (20 ban đầu), thời lượng 360 s, Bóng Mực 4.5 m/s
+ok 36 - Đêm 3: 7 đèn, 30 điểm đom đóm (20 ban đầu), thời lượng 360 s, Bóng Mực 4.5 m/s
+  ---
+  duration_ms: 2.383188
+  type: 'test'
+  ...
+# Subtest: Đêm 3: vách đứng tầng 1 chặn không leo; dốc 30° đi lên được tới Y=3
+ok 37 - Đêm 3: vách đứng tầng 1 chặn không leo; dốc 30° đi lên được tới Y=3
+  ---
+  duration_ms: 6.434629
+  type: 'test'
+  ...
+# Subtest: Đêm 3: bước ra mép tầng 1 thì rơi xuống tầng dưới (không phải hư không)
+ok 38 - Đêm 3: bước ra mép tầng 1 thì rơi xuống tầng dưới (không phải hư không)
+  ---
+  duration_ms: 10.323031
+  type: 'test'
+  ...
+# Subtest: Đêm 3: bục nhảy (0,3,13) đưa Mây lên tầng 2 (Y=6)
+ok 39 - Đêm 3: bục nhảy (0,3,13) đưa Mây lên tầng 2 (Y=6)
+  ---
+  duration_ms: 8.629859
+  type: 'test'
+  ...
+# Subtest: Đêm 3: tháp chuông (trụ r=2) không đi xuyên được
+ok 40 - Đêm 3: tháp chuông (trụ r=2) không đi xuyên được
+  ---
+  duration_ms: 2.163842
+  type: 'test'
+  ...
+# Subtest: Đêm 3: gió mạnh 2 m/s kéo dài 5 s, cứ 30 s một lần, báo trước 2 s
+ok 41 - Đêm 3: gió mạnh 2 m/s kéo dài 5 s, cứ 30 s một lần, báo trước 2 s
+  ---
+  duration_ms: 111.048761
+  type: 'test'
+  ...
+# Subtest: Gió Lạc: sinh tại tick 1200, 2400, ...; tối đa 2; id D1, D2
+ok 42 - Gió Lạc: sinh tại tick 1200, 2400, ...; tối đa 2; id D1, D2
+  ---
+  duration_ms: 140.358561
+  type: 'test'
+  ...
+# Subtest: Gió Lạc: idle -> chase khi mang >= 5 và cách <= 15 m; điều kiện mất thì về idle
+ok 43 - Gió Lạc: idle -> chase khi mang >= 5 và cách <= 15 m; điều kiện mất thì về idle
+  ---
+  duration_ms: 1.123699
+  type: 'test'
+  ...
+# Subtest: Gió Lạc: chạm (<=1.2 m) cướp min(3, mang), rồi flee 7 m/s 240 tick và biến mất cùng số đã cướp, chỉ cướp 1 lần
+ok 44 - Gió Lạc: chạm (<=1.2 m) cướp min(3, mang), rồi flee 7 m/s 240 tick và biến mất cùng số đã cướp, chỉ cướp 1 lần
+  ---
+  duration_ms: 4.799627
+  type: 'test'
+  ...
+# Subtest: Gió Lạc: cướp không làm mất Ngọn Lửa và bất tử không ngăn cướp
+ok 45 - Gió Lạc: cướp không làm mất Ngọn Lửa và bất tử không ngăn cướp
+  ---
+  duration_ms: 0.329942
+  type: 'test'
+  ...
+# Subtest: Gió Lạc: Tỏa Sáng trúng con đang chase -> flee, không cướp
+ok 46 - Gió Lạc: Tỏa Sáng trúng con đang chase -> flee, không cướp
+  ---
+  duration_ms: 0.468848
+  type: 'test'
+  ...
+# Subtest: Gió Lạc: Tỏa Sáng trúng con đang flee có đồ -> thả toàn bộ thành đom đóm rơi, biến mất sau 120 tick
+ok 47 - Gió Lạc: Tỏa Sáng trúng con đang flee có đồ -> thả toàn bộ thành đom đóm rơi, biến mất sau 120 tick
+  ---
+  duration_ms: 3.108458
+  type: 'test'
+  ...
+# Subtest: Gió Lạc: vùng an toàn của đèn không chặn Gió Lạc
+ok 48 - Gió Lạc: vùng an toàn của đèn không chặn Gió Lạc
+  ---
+  duration_ms: 1.561422
+  type: 'test'
+  ...
+# Subtest: chạy headless một Đêm đầy đủ (21600 tick) xong trong <= 30 s
+ok 49 - chạy headless một Đêm đầy đủ (21600 tick) xong trong <= 30 s
+  ---
+  duration_ms: 485.061137
+  type: 'test'
+  ...
+# Subtest: bảng màu khớp Ticket-02 (sai lệch RGB <= 10%)
+ok 50 - bảng màu khớp Ticket-02 (sai lệch RGB <= 10%)
+  ---
+  duration_ms: 0.753307
+  type: 'test'
+  ...
+# Subtest: tick model: snapshot 0 trước input, N bước đúng N tick, tốc độ 6 m/s
+ok 51 - tick model: snapshot 0 trước input, N bước đúng N tick, tốc độ 6 m/s
+  ---
+  duration_ms: 5.920642
+  type: 'test'
+  ...
+# Subtest: chuẩn hoá vector chéo, yaw 90 độ, frame chỉ đổi trường có mặt
+ok 52 - chuẩn hoá vector chéo, yaw 90 độ, frame chỉ đổi trường có mặt
+  ---
+  duration_ms: 2.338217
+  type: 'test'
+  ...
+# Subtest: nhảy: 7 m/s, trọng lực 20, chỉ nhảy khi chạm đất
+ok 53 - nhảy: 7 m/s, trọng lực 20, chỉ nhảy khi chạm đất
+  ---
+  duration_ms: 3.354436
+  type: 'test'
+  ...
+# Subtest: lướt: 14 m/s trong 12 tick, hồi chiêu 90 tick từ lúc bắt đầu, bấm lúc đang lướt bị bỏ qua
+ok 54 - lướt: 14 m/s trong 12 tick, hồi chiêu 90 tick từ lúc bắt đầu, bấm lúc đang lướt bị bỏ qua
+  ---
+  duration_ms: 2.656103
+  type: 'test'
+  ...
+# Subtest: lướt trên không giữ nguyên độ cao, hướng theo phím di chuyển
+ok 55 - lướt trên không giữ nguyên độ cao, hướng theo phím di chuyển
+  ---
+  duration_ms: 1.433749
+  type: 'test'
+  ...
+# Subtest: đom đóm: 20 lúc đầu tại 20 điểm khác nhau thuộc tập điểm chuẩn
+ok 56 - đom đóm: 20 lúc đầu tại 20 điểm khác nhau thuộc tập điểm chuẩn
+  ---
+  duration_ms: 0.822685
+  type: 'test'
+  ...
+# Subtest: đom đóm: nhặt trong 1.0 m, chênh cao <= 1.5, sức chứa 10
+ok 57 - đom đóm: nhặt trong 1.0 m, chênh cao <= 1.5, sức chứa 10
+  ---
+  duration_ms: 1.908341
+  type: 'test'
+  ...
+# Subtest: đom đóm: sinh thêm mỗi 240 tick khi dưới 30, hết điểm trống thì bỏ lượt
+ok 58 - đom đóm: sinh thêm mỗi 240 tick khi dưới 30, hết điểm trống thì bỏ lượt
+  ---
+  duration_ms: 176.186494
+  type: 'test'
+  ...
+# Subtest: đèn: chi phí 10, nạp nhiều lần, +10/đom đóm và +100/đèn
+ok 59 - đèn: chi phí 10, nạp nhiều lần, +10/đom đóm và +100/đèn
+  ---
+  duration_ms: 1.553518
+  type: 'test'
+  ...
+# Subtest: đèn: bán kính 2.0, chọn đèn gần nhất, bằng nhau thì id nhỏ hơn, bỏ qua đèn đã sáng
+ok 60 - đèn: bán kính 2.0, chọn đèn gần nhất, bằng nhau thì id nhỏ hơn, bỏ qua đèn đã sáng
+  ---
+  duration_ms: 1.18707
+  type: 'test'
+  ...
+# Subtest: interact chỉ kích hoạt khi false->true
+ok 61 - interact chỉ kích hoạt khi false->true
+  ---
+  duration_ms: 0.961439
+  type: 'test'
+  ...
+# Subtest: thắng: tất cả đèn sáng, điểm = 100 + 10*mote + 2*giây + 50*lửa
+ok 62 - thắng: tất cả đèn sáng, điểm = 100 + 10*mote + 2*giây + 50*lửa
+  ---
+  duration_ms: 0.571975
+  type: 'test'
+  ...
+# Subtest: thắng đúng tick hết giờ vẫn là thắng; hết giờ không thắng là dawn
+ok 63 - thắng đúng tick hết giờ vẫn là thắng; hết giờ không thắng là dawn
+  ---
+  duration_ms: 4.387628
+  type: 'test'
+  ...
+# Subtest: tất định: cùng seed/scenario/inputs ra output giống hệt
+ok 64 - tất định: cùng seed/scenario/inputs ra output giống hệt
+  ---
+  duration_ms: 553.894736
+  type: 'test'
+  ...
+1..64
+# tests 64
+# suites 0
+# pass 64
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4161.178814
