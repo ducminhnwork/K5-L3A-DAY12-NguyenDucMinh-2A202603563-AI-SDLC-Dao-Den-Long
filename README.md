@@ -1,6 +1,6 @@
 # Đảo Đèn Lồng v1.0.0
 
-> 🎬 Video demo (<5 phút): _(dán link .mp4 vào đây — xem docs/RETRO.md mục "Việc người làm phải tự điền")_
+> Video demo: không có (xem bằng chứng ở docs/proof/phase-4/, bench.json, soak.json).
 
 ![Đêm 1](docs/media/game.png)
 
