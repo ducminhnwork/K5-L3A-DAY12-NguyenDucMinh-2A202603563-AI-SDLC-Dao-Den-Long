@@ -1,0 +1,5 @@
+{"type":"snapshot","tick":0,"sim_tick":0,"state":"playing","time_left_s":100,"score":0,"player":{"pos":[0,0,0],"flames":2,"carried":4},"lanterns":[{"id":"L1","pos":[0,0,1],"lit":false,"deposited":0},{"id":"L2","pos":[0,0,60],"lit":true,"deposited":4},{"id":"L3","pos":[0,0,61],"lit":true,"deposited":4},{"id":"L4","pos":[0,0,62],"lit":true,"deposited":4},{"id":"L5","pos":[0,0,63],"lit":true,"deposited":4}],"shades":[],"motes_active":0,"motes":[]}
+{"type":"event","tick":1,"name":"deposit","data":{"lantern_id":"L1","amount":4,"deposited":4}}
+{"type":"event","tick":1,"name":"lantern_lit","data":{"lantern_id":"L1"}}
+{"type":"event","tick":1,"name":"game_over","data":{"result":"won","reason":"all_lit"}}
+{"type":"end","ticks":1,"state":"won","score":299}

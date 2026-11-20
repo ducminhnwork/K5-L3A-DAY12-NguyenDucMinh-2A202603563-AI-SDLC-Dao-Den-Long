@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Đảo Đèn Lồng</title>
+<style>
+  html,body{margin:0;height:100%;background:#0b0716;overflow:hidden;font-family:system-ui,sans-serif;color:#ffd9a0}
+  #hud{position:fixed;top:10px;left:12px;font-size:16px;line-height:1.5;text-shadow:0 0 6px #000;pointer-events:none}
+  #help{position:fixed;bottom:10px;left:12px;font-size:12px;opacity:.75;pointer-events:none}
+  #msg{position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;background:#0b0716cc;font-size:28px;text-align:center}
+  #msg small{font-size:16px;margin-top:10px;opacity:.8}
+</style>
+</head>
+<body>
+<div id="hud"></div>
+<div id="help">WASD đi · Space nhảy · E nạp đèn · F toả sáng · ←/→ xoay camera · R chơi lại</div>
+<div id="msg"></div>
+<script type="module" src="/src/web/main.js"></script>
+</body>
+</html>

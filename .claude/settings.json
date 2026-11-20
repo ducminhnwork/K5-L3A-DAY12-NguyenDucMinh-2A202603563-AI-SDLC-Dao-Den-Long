@@ -1,0 +1,7 @@
+{
+  "hooks": {
+    "Stop": [
+      { "hooks": [ { "type": "command", "command": "npm test --silent || (echo 'Test đỏ: sửa trước khi dừng' >&2; exit 2)" } ] }
+    ]
+  }
+}
