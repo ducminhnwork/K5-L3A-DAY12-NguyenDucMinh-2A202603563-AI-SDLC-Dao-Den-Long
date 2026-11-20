@@ -1,0 +1,27 @@
+tests exit=0
+PASS [p2] dash (Lướt) 
+PASS [p2] charm (Bùa Gió) 
+PASS [p2] drifter-steal (Gió Lạc cướp) 
+PASS [p2] drifter-drop (Gió Lạc thả đồ khi bị Toả Sáng) 
+PASS [p2] pulse (Toả Sáng) 
+PASS [p2] pause (Tạm dừng) 
+PASS [p2] fall (Rơi khỏi đảo) 
+PASS [p2] pad-night2 (Bục nhảy Đêm 2) 
+PASS [p2] pad-night3 (Bục nhảy Đêm 3) 
+PASS [p2] safe-zone-push (Vùng an toàn: đẩy bóng, không sát thương) 
+PASS [p2] wind-night3 (Gió mạnh Đêm 3) 
+PASS [p2] win-night1 (Thắp đèn (Ticket-03: không còn thắng sớm; xem scenarios/phase3)) 
+PASS [p3] refuel (Châm dầu) 
+PASS [p3] lantern-out (Hết dầu) 
+PASS [p3] relight (Thắp lại (5 đom đóm) + sức chứa) 
+PASS [p3] drain (Bóng Mực hút dầu) 
+PASS [p3] dawn-win (Thắng ở bình minh) 
+PASS [p3] dawn-lose (Thua khi dưới ngưỡng) 
+PASS [p3] no-early-win (Không còn thắng sớm) 
+PASS [p3] no-flames-at-dawn (Hết lửa thua trước ở tick bình minh) 
+PASS determinism (night 3, seed 7, 3000 tick)
+perf night 1: 0.38 s (ngưỡng 30 s) exit=0
+perf night 2: 0.31 s (ngưỡng 30 s) exit=0
+perf night 3: 0.44 s (ngưỡng 30 s) exit=0
+PASS soak 10 Đêm (sandbox) exit=0
+PASS bench chạy được (sandbox, renderer phần mềm, 5 s; số đo KHÔNG đại diện) exit=0

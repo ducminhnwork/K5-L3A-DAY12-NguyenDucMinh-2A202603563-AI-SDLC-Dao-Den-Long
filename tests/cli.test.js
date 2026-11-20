@@ -17,7 +17,7 @@ const base = (out) => ['--seed', '1', '--night', '1', '--ticks', '30', '--out', 
 
 test('game.contract.json khớp TUNING thật sự dùng trong game', () => {
   const c = JSON.parse(fs.readFileSync('game.contract.json', 'utf8'));
-  assert.equal(c.contract_version, '1.2');
+  assert.equal(c.contract_version, '1.3');
   assert.deepEqual(c.tuning, JSON.parse(JSON.stringify(TUNING)));
   for (const k of ['team', 'build_cmd', 'run_cmd', 'headless_cmd']) assert.ok(c[k]);
 });

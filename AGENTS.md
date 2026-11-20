@@ -19,8 +19,13 @@
 - Nhiên liệu đèn là số nguyên theo 1/60 fuel (`U = 60`); chỉ làm tròn khi xuất snapshot. Vùng an toàn dùng `zoneOn(l)`, không dùng `l.lit`.
 - Bảng màu và chế độ mù màu chỉ ở `src/web/`; không đổi headless.
 
+## Quy tắc thêm ở Phase 4
+- `Sim({bench:true})` chỉ dành cho web benchmark; không bao giờ bật ở headless/soak. Hiệu ứng "sáng tạo" (rung, loé) tắt được và không có trong bench/soak.
+- Số liệu bench/soak trên sandbox KHÔNG đại diện; bằng chứng thật là `bench.json`/`soak.json` chạy trên máy người làm. Không bịa số.
+- Chữ giao diện ≥ 18 px (dùng biến `--fs` trong `index.html`).
+
 ## Lệnh
-- `npm install` · `npm start` · `npm test` · `npm run proof` (sinh `docs/proof/phase-3/`, gồm hồi quy scenario Phase 2)
+- `npm install` · `npm start` (launcher `scripts/run.js`) · `npm test` · `npm run proof` (sinh `docs/proof/phase-4/`, gồm hồi quy Phase 2–3) · `npm run bench` · `npm run soak` · `npm run release`
 - Headless: `node src/headless.js --seed 1 --night 1|2|3 --ticks 600 --out out.jsonl`
 
 ## Kỹ năng

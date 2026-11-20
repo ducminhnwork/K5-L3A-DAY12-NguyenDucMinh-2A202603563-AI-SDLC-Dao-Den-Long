@@ -18,3 +18,8 @@ Công cụ: Claude (trợ lý lập trình). Tôi điều phối, chạy lệnh,
 - Tự kiểm: `npm test` (84), `npm run proof` (20 scenario gồm hồi quy Phase 2, tất định, hiệu năng), `vite build`.
 - Chưa kiểm: web Phase 3 bằng mắt (thanh dầu, nhấp nháy, chế độ mù màu), FPS.
 - Ước lượng token: _(điền số thật từ phiên của bạn)_
+
+## Phase 4
+- Việc giao cho AI: đọc Ticket-04, lập danh sách giả định (`phase-4-assumptions.md`), viết bench/soak/leaderboard/server/đổi phím/chỉ báo, test (12 test mới), README/CHANGELOG/CREDITS/RETRO, gói Release.
+- Lỗi AI mắc và cách bắt: (1) soak lần đầu `mem_end > 1.2 × mem_start` (đo trước khi V8 làm nóng) — bắt bằng cách chạy thật rồi đo từng Đêm bằng `memtrace`, không đoán; (2) hướng camera bench: dễ nhầm (cos, sin) với "ngược chiều kim đồng hồ" — suy ra lại từ hệ trục tay phải và ghi vào giả định.
+- Token: _(điền số thật)_

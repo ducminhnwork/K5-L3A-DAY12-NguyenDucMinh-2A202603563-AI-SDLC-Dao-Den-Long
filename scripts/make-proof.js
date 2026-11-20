@@ -1,5 +1,5 @@
 // Sinh bằng chứng thật cho phase: chạy toàn bộ test + từng scenario headless và KIỂM TRA kết quả mong đợi.
-// Dùng: node scripts/make-proof.js [phase]   (2 hoặc 3; phase 3 chạy lại cả manifest phase 2 để kiểm hồi quy). Thoát khác 0 nếu có gì sai.
+// Dùng: node scripts/make-proof.js [phase]   (2, 3 hoặc 4; phase sau chạy lại manifest phase trước để kiểm hồi quy). Thoát khác 0 nếu có gì sai.
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -44,9 +44,9 @@ function runManifest(file, tag) {
   }
 }
 
-if (phase === '2' || phase === '3') {
+if (['2', '3', '4'].includes(phase)) {
   runManifest('scenarios/phase2/manifest.json', 'p2');
-  if (phase === '3') runManifest('scenarios/phase3/manifest.json', 'p3');
+  if (phase !== '2') runManifest('scenarios/phase3/manifest.json', 'p3');
   // tất định: chạy hai lần cùng đầu vào, so từng byte
   const a = `${dir}/runs/determinism-a.jsonl`;
   const b = `${dir}/runs/determinism-b.jsonl`;
@@ -63,6 +63,17 @@ if (phase === '2' || phase === '3') {
     summary.push(`perf night ${n}: ${sec.toFixed(2)} s (ngưỡng 30 s) exit=${r.status}`);
     if (sec > 30 || r.status !== 0) failed = true;
     fs.rmSync(`${dir}/runs/perf-n${n}.jsonl`, { force: true }); // file lớn, chỉ giữ số đo
+  }
+}
+if (phase === '4') {
+  // soak thật (headless, 10 Đêm) và bench trong sandbox (renderer phần mềm: CHỈ để chứng minh lệnh chạy được, số đo không đại diện)
+  const sk = spawnSync('node', ['scripts/soak.js', '--seed', '7', '--nights', '10', '--out', `${dir}/soak-sandbox.json`], { encoding: 'utf8' });
+  summary.push(`${sk.status === 0 ? 'PASS' : 'FAIL'} soak 10 Đêm (sandbox) exit=${sk.status}`);
+  if (sk.status !== 0) failed = true;
+  if (process.env.PROOF_BENCH !== '0') {
+    const bn = spawnSync('node', ['scripts/bench.js', '--seed', '42', '--duration', '5', '--out', `${dir}/bench-sandbox.json`], { encoding: 'utf8', env: { ...process.env, BENCH_HEADLESS: '1' } });
+    summary.push(`${bn.status === 0 ? 'PASS' : 'FAIL'} bench chạy được (sandbox, renderer phần mềm, 5 s; số đo KHÔNG đại diện) exit=${bn.status}`);
+    if (bn.status !== 0) failed = true;
   }
 }
 fs.writeFileSync(`${dir}/summary.txt`, summary.join('\n') + '\n');

@@ -1,0 +1,1 @@
+{"nights":10,"crashes":0,"results":["lost","lost","lost","lost","lost","lost","lost","lost","lost","lost"],"mem_start_mb":43.2,"mem_end_mb":43.7,"note":"mem_start đo sau khi làm nóng V8 (warm-up 3 x 4000 tick) và gc; xem docs/notes/phase-4-assumptions.md","duration_s":0.3}

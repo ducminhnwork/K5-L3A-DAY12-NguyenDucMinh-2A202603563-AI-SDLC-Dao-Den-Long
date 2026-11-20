@@ -15,6 +15,7 @@ const std = (color, extra = {}) => new THREE.MeshStandardMaterial({ color, rough
 /** Chế độ mù màu: viền và mắt Bóng Mực #7A3CFF -> #00B3FF. */
 export function setColorblind(on) {
   PAL.shadeRim = on ? 0x00b3ff : 0x7a3cff;
+  refreshShadeColors();
 }
 
 export function buildWorld(night) {
@@ -125,19 +126,39 @@ export function makeLantern(l) {
   return { grp, lamp, core, light, ring, tear, bar, barFill };
 }
 
+const MOTE_CORE = new THREE.SphereGeometry(0.14, 8, 8);
+const MOTE_HALO = new THREE.SphereGeometry(0.36, 8, 8);
+const MOTE_CORE_MAT = new THREE.MeshBasicMaterial({ color: PAL.moteCore });
+const MOTE_HALO_MAT = new THREE.MeshBasicMaterial({ color: PAL.moteHalo, transparent: true, opacity: 0.3 });
 export function makeMote() {
   const grp = new THREE.Group();
-  grp.add(new THREE.Mesh(new THREE.SphereGeometry(0.14, 8, 8), new THREE.MeshBasicMaterial({ color: PAL.moteCore })));
-  grp.add(new THREE.Mesh(new THREE.SphereGeometry(0.36, 8, 8), new THREE.MeshBasicMaterial({ color: PAL.moteHalo, transparent: true, opacity: 0.3 })));
+  grp.add(new THREE.Mesh(MOTE_CORE, MOTE_CORE_MAT), new THREE.Mesh(MOTE_HALO, MOTE_HALO_MAT));
   return grp;
+}
+
+// Hình học/vật liệu Bóng Mực dùng chung (200 con trong benchmark): đổi màu bằng cách đổi vật liệu, không nhân bản.
+const SHADE_GEO = new THREE.IcosahedronGeometry(0.9, 1);
+const EDGE_GEO = new THREE.IcosahedronGeometry(1.0, 1);
+const EYE_GEO = new THREE.SphereGeometry(0.12, 6, 6);
+export const SHADE_MATS = {
+  body: std(PAL.shade, { emissive: PAL.shadeRim, emissiveIntensity: 0.25 }),
+  stun: std(PAL.shadeStun),
+  edge: new THREE.MeshBasicMaterial({ color: PAL.shadeRim, wireframe: true, transparent: true, opacity: 0.55 }),
+  eye: new THREE.MeshBasicMaterial({ color: PAL.shadeRim }),
+};
+/** Gọi mỗi khi đổi chế độ mù màu. */
+export function refreshShadeColors() {
+  SHADE_MATS.body.emissive.setHex(PAL.shadeRim);
+  SHADE_MATS.edge.color.setHex(PAL.shadeRim);
+  SHADE_MATS.eye.color.setHex(PAL.shadeRim);
 }
 
 export function makeShade() {
   const grp = new THREE.Group();
-  const body = new THREE.Mesh(new THREE.IcosahedronGeometry(0.9, 1), std(PAL.shade, { emissive: PAL.shadeRim, emissiveIntensity: 0.25 }));
-  const edge = new THREE.Mesh(new THREE.IcosahedronGeometry(1.0, 1), new THREE.MeshBasicMaterial({ color: PAL.shadeRim, wireframe: true, transparent: true, opacity: 0.55 }));
+  const body = new THREE.Mesh(SHADE_GEO, SHADE_MATS.body);
+  const edge = new THREE.Mesh(EDGE_GEO, SHADE_MATS.edge);
   const eyes = [-0.3, 0.3].map((x) => {
-    const e = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), new THREE.MeshBasicMaterial({ color: PAL.shadeRim }));
+    const e = new THREE.Mesh(EYE_GEO, SHADE_MATS.eye);
     e.position.set(x, 0.2, 0.8);
     grp.add(e);
     return e;

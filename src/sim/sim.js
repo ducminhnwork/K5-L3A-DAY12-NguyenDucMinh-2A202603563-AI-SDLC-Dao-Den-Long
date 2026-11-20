@@ -28,7 +28,8 @@ export const defaultInput = () => ({
 });
 
 export class Sim {
-  constructor({ seed = 1, night = 1, scenario = {} } = {}) {
+  constructor({ seed = 1, night = 1, scenario = {}, bench = false } = {}) {
+    this.bench = bench; // chỉ web benchmark: tắt spawn, sát thương, nhặt, hao dầu, kết thúc Đêm
     this.t = TUNING;
     this.R = RULES;
     this.rng = mulberry32(seed);
@@ -302,7 +303,7 @@ export class Sim {
     const active = p.respawnWait === 0;
 
     // 4) nhặt
-    if (active) this.pickups();
+    if (active && !this.bench) this.pickups();
     // 5) tương tác đèn
     const justLit = [];
     if (active && edge.interact) this.interact(justLit);
@@ -314,7 +315,7 @@ export class Sim {
     this.moveShades();
     this.moveDrifters();
     // 9) chạm
-    if (active) this.collisions();
+    if (active && !this.bench) this.collisions();
     // 10) sinh
     this.spawns();
     // 11) thắng / thua
@@ -324,6 +325,7 @@ export class Sim {
 
   /** Bước 2: hao dầu 1/s + bị hút; ngay sau đó đèn fuel <= 0 tắt. */
   updateFuel() {
+    if (this.bench) return;
     const decay = (this.t.fuel_decay_per_s * U) / HZ; // đơn vị 1/60 mỗi tick
     for (const l of this.lanterns) if (l.lit) l.fuel -= decay;
     for (const s of this.shades) {
@@ -692,7 +694,7 @@ export class Sim {
           s.state = 'wander';
         } else continue; // đứng yên hút dầu (đã trừ ở bước 2)
       }
-      this.decideChase(s, dp);
+      if (!this.bench) this.decideChase(s, dp); // bench: giữ nguyên wander
       if (s.state === 'wander') {
         const low = this.t.low_fuel_threshold * U;
         let tgt = null;
@@ -853,6 +855,7 @@ export class Sim {
   }
 
   spawns() {
+    if (this.bench) return;
     const R = this.R;
     // đom đóm
     if (this.simTick % R.mote_spawn_ticks === 0 && this.motes.length < R.mote_cap) {
@@ -898,6 +901,7 @@ export class Sim {
 
   /** Sau mọi cập nhật của tick: hết Ngọn Lửa luôn thua trước; thắng chỉ ở bình minh. */
   checkEnd() {
+    if (this.bench) return undefined;
     const p = this.player;
     if (p.flames <= 0) return this.finish('lost', 'no_flames');
     if (this.simTick >= this.totalTicks) {
