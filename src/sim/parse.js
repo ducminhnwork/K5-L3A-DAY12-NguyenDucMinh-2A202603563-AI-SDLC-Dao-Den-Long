@@ -31,7 +31,7 @@ export function parseInputs(obj) {
   return obj.frames;
 }
 
-const SHADE_STATES = ['spawning', 'wander', 'chase', 'recoil', 'stunned'];
+const SHADE_STATES = ['spawning', 'wander', 'chase', 'recoil', 'stunned', 'drain'];
 const DRIFTER_STATES = ['idle', 'chase', 'flee'];
 
 /** Kiểm tra hình dạng file scenario (contract v1.1). Id đèn lạ sẽ bị Sim từ chối (exit 2). */
@@ -41,7 +41,7 @@ export function parseScenario(obj) {
     const p = obj.player;
     if (!isObj(p)) throw new FormatError('scenario.player: phải là object');
     if ('pos' in p && !isVec3(p.pos)) throw new FormatError('scenario.player.pos: phải là [x,y,z]');
-    for (const k of ['carried', 'flames', 'invuln_ticks', 'dash_cd_ticks', 'pulse_cd_ticks', 'charm_ticks']) {
+    for (const k of ['carried', 'flames', 'invuln_ticks', 'dash_cd_ticks', 'pulse_cd_ticks', 'charm_ticks', 'successful_lights']) {
       if (k in p && !isNat(p[k])) throw new FormatError(`scenario.player.${k}: phải là số nguyên >= 0`);
     }
   }
@@ -63,6 +63,7 @@ export function parseScenario(obj) {
       if ('id' in s && typeof s.id !== 'string') throw new FormatError(`${w}.id: phải là chuỗi`);
       if ('state' in s && !SHADE_STATES.includes(s.state)) throw new FormatError(`${w}.state: phải thuộc ${SHADE_STATES.join('/')}`);
       if ('state_ticks_left' in s && !isNat(s.state_ticks_left)) throw new FormatError(`${w}.state_ticks_left: phải là số nguyên >= 0`);
+      if ('target_lantern_id' in s && typeof s.target_lantern_id !== 'string') throw new FormatError(`${w}.target_lantern_id: phải là chuỗi`);
     });
   }
   if ('drifters' in obj) {
@@ -93,6 +94,8 @@ export function parseScenario(obj) {
       if ('pos' in l && !isVec3(l.pos)) throw new FormatError(`${w}.pos: phải là [x,y,z]`);
       if ('deposited' in l && !isNat(l.deposited)) throw new FormatError(`${w}.deposited: phải là số nguyên >= 0`);
       if ('lit' in l && !isBool(l.lit)) throw new FormatError(`${w}.lit: phải là boolean`);
+      if ('ever_lit' in l && !isBool(l.ever_lit)) throw new FormatError(`${w}.ever_lit: phải là boolean`);
+      if ('fuel' in l && !(isNum(l.fuel) && l.fuel >= 0 && l.fuel <= 100)) throw new FormatError(`${w}.fuel: phải là số trong [0, 100]`);
     });
   }
   if ('time_left_s' in obj && !(isNum(obj.time_left_s) && obj.time_left_s > 0)) {

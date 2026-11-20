@@ -1,4 +1,4 @@
-# Đảo Đèn Lồng — Phase 2
+# Đảo Đèn Lồng — Phase 3
 
 > Video demo: _(dán link .mp4 ở Phase 4)_
 
@@ -24,23 +24,25 @@ Chạy được trên Windows/macOS/Linux (web). Cần Node 20+.
 | Esc / P | tạm dừng (Tiếp tục / Chơi lại Đêm / Cài đặt / Về menu) |
 
 ## Ba Đêm
-1. **Đảo Bến**: 5 đèn, 300 s. 2. **Đảo Cau**: hai đảo nối cầu tre, bục nhảy, Gió Lạc, Bùa Gió, 6 đèn, 330 s. 3. **Đảo Chuông**: 3 tầng, dốc, gió mạnh, 7 đèn, 360 s.
-Thắng đủ ba Đêm để thấy Bình Minh; thua thì chơi lại Đêm đó.
+1. **Đảo Bến**: 5 đèn, 240 s. 2. **Đảo Cau**: hai đảo nối cầu tre, bục nhảy, Gió Lạc, Bùa Gió, 6 đèn, 270 s. 3. **Đảo Chuông**: 3 tầng, dốc, gió mạnh, 7 đèn, 300 s.
+**Mục tiêu:** giữ đảo sáng tới bình minh. Thắng nếu còn sống khi hết giờ và số đèn đang sáng ≥ 60% (3/5, 4/6, 5/7). Không còn thắng sớm. Thắng đủ ba Đêm để thấy Bình Minh; thua thì chơi lại Đêm đó.
 
 ## Luật và điểm
-- Đom đóm tự nhặt khi lại gần (tối đa 10). Một đèn cần 10 đom đóm, nạp nhiều lần được.
-- Đèn sáng tạo vùng an toàn 6 m; Bóng Mực không vào được.
+- Đom đóm tự nhặt khi lại gần. Sức chứa 10, +2 sau mỗi lần thắp thành công, tối đa 20 (đặt lại mỗi Đêm).
+- Đèn cần 10 đom đóm để thắp lần đầu, 5 để thắp lại. Đèn sáng có **dầu** (100), hao 1/s. Bấm E ở đèn đang sáng để **châm dầu** (mỗi đom đóm +10). Hết dầu thì đèn tắt.
+- Đèn còn ≥ 30 dầu tạo vùng an toàn 6 m. Dưới 30 thì mất vùng và nhấp nháy; **Bóng Mực** sẽ tới hút 5 dầu/giây.
 - Bị Bóng Mực chạm: −1 ngọn lửa, rơi một nửa đom đóm, bất tử 1,5 s. Rơi khỏi đảo: −1 ngọn lửa, mất hết đom đóm, hồi sinh sau 1 s.
 - Gió Lạc cướp 3 đom đóm nếu bạn mang ≥ 5; toả sáng trúng nó để buộc nó bỏ chạy hoặc thả lại đồ. Bùa Gió: chạy nhanh hơn và lướt không hồi chiêu trong 10 s.
-- Điểm: nạp +10/đom đóm, thắp đèn +100, toả sáng trúng +5/bóng; thắng thêm +2/giây còn lại và +50/ngọn lửa còn lại. Tổng điểm game = tổng điểm các Đêm đã thắng.
+- Điểm: nạp/châm +5/đom đóm; thắp lần đầu +100; thắp lại +40; toả sáng trúng +5/bóng (+15 nếu bóng đang hút dầu); bình minh (khi thắng) +50 + dầu còn lại cho mỗi đèn sáng và +50/ngọn lửa còn lại.
+- Cài đặt có "Bảng màu dễ phân biệt" (mù màu): viền Bóng Mực xanh, cảnh báo trắng kèm ⚠.
 
 ## Test và headless
 ```
-npm test                 # 64 test
-npm run proof            # chạy scenario thật, tất định, hiệu năng; ghi docs/proof/phase-2/
+npm test                 # 84 test
+npm run proof            # chạy scenario thật (gồm hồi quy Phase 2), tất định, hiệu năng; ghi docs/proof/phase-3/
 node src/headless.js --seed 1 --night 1 --ticks 600 --out out.jsonl [--scenario f.json] [--inputs f.json] [--snapshot-every 10]
 ```
-Theo Test Contract v1.1 (`game.contract.json`). Lỗi định dạng file → exit 2, thông báo ở stderr. Một Đêm đầy đủ (21 600 tick) chạy khoảng 0,3 s. Số liệu chuẩn ở `src/sim/config.js`; các giả định ở `docs/notes/phase-2-assumptions.md`; spec + tiêu chí nghiệm thu ở `docs/spec-phase-2.md`.
+Theo Test Contract v1.2 (`game.contract.json`). Lỗi định dạng file → exit 2, thông báo ở stderr. Một Đêm đầy đủ (21 600 tick) chạy khoảng 0,3 s. Số liệu chuẩn ở `src/sim/config.js`; các giả định ở `docs/notes/phase-2-assumptions.md`; spec Phase 2/3 ở `docs/spec-phase-2.md`, `docs/spec-phase-3.md`; quyết định thiết kế ở `docs/adr/`; thay đổi phá vỡ ở `docs/CHANGELOG-phase-3.md`.
 
 ## Sáng tạo của tôi
 Chỉ ở bản web, không ảnh hưởng headless: bầu trời sao, đom đóm lơ lửng nhấp nhô, đèn lồng đung đưa, nhân vật nhấp nháy khi bất tử, lá bay báo gió, nhạc nền và âm thanh tổng hợp bằng WebAudio (không dùng file ngoài).

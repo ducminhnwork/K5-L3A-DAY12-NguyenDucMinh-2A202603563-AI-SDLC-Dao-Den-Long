@@ -9,7 +9,7 @@ export const TUNING = Object.freeze({
   interact_radius: 2.0,
   pulse_cost: 3,
   pulse_radius: 5,
-  night1_duration_s: 300,
+  night1_duration_s: 240,
   flames: 3,
   invuln_s: 1.5, // 90 tick
   hit_drop_ratio: 0.5,
@@ -23,13 +23,24 @@ export const TUNING = Object.freeze({
   dash_speed: 14,
   dash_duration_s: 0.2, // 12 tick
   dash_cooldown_s: 1.5, // 90 tick
-  night2_duration_s: 330,
-  night3_duration_s: 360,
+  night2_duration_s: 270,
+  night3_duration_s: 300,
+  fuel_max: 100,
+  fuel_decay_per_s: 1.0,
+  fuel_per_mote: 10,
+  relight_cost: 5,
+  win_ratio: 0.6,
+  drain_per_s: 5,
+  low_fuel_threshold: 30,
+  capacity_max: 20,
   score: Object.freeze({
-    per_mote: 10,
-    per_lantern: 100,
+    per_mote: 5,
+    per_lantern: 100, // thắp lần đầu
+    per_relight: 40,
     per_stun: 5,
-    per_second_left: 2,
+    per_stun_draining: 15,
+    per_second_left: 0, // thưởng thời gian đã bỏ (Ticket-03)
+    per_lit_lantern_dawn: 50, // + floor(fuel)
     per_flame_left: 50,
   }),
 });
@@ -67,6 +78,11 @@ export const RULES = Object.freeze({
   wander_retarget_ticks: 120,
   safe_push_ticks: 30,
   safe_push_speed: 12,
+  capacity_base: 10,
+  capacity_per_light: 2,
+  drain_reach_m: 2,
+  drain_flee_to_chase_m: 6,
+  hunt_speed: 4.0,
   charm_speed: 7.2,
   charm_ticks: 600,
   charm_respawn_ticks: 2700,

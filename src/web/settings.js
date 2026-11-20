@@ -1,6 +1,6 @@
 // Cài đặt (âm lượng, độ nhạy chuột) lưu giữa các lần mở game.
 const KEY = 'dao-den-long-settings';
-const DEFAULTS = { volume: 60, sens: 40 };
+const DEFAULTS = { volume: 60, sens: 40, colorblind: false };
 let cache = null;
 
 export function loadSettings() {

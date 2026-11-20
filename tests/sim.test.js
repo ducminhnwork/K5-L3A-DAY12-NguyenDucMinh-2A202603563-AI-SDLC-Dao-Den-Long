@@ -13,7 +13,7 @@ test('tick model: snapshot 0 trước input, N bước đúng N tick, tốc đ�
   assert.deepEqual(s[0].player.pos, [0, 0, 0]);
   assert.equal(last(rows).ticks, 10);
   assert.equal(s[10].player.pos[2], 1); // 10 bước x 0.1 m
-  assert.equal(s[10].time_left_s, Math.round((300 - 10 / 60) * 1000) / 1000);
+  assert.equal(s[10].time_left_s, Math.round((240 - 10 / 60) * 1000) / 1000);
   assert.equal(s[1].player.vel[2], 6); // đạt tốc độ tối đa trong <= 0.1 s
 });
 
@@ -102,7 +102,7 @@ test('đèn: chi phí 10, nạp nhiều lần, +10/đom đóm và +100/đèn', (
   });
   assert.deepEqual(events(rows, 'deposit')[0].data, { lantern_id: 'L1', amount: 10, deposited: 10 });
   assert.equal(events(rows, 'lantern_lit').length, 1);
-  assert.equal(last(snaps(rows)).score, 10 * 10 + 100);
+  assert.equal(last(snaps(rows)).score, 10 * 5 + 100); // Ticket-03: +5/đom đóm nạp
 
   const part = run({
     seed: 1, ticks: 6,
@@ -113,14 +113,16 @@ test('đèn: chi phí 10, nạp nhiều lần, +10/đom đóm và +100/đèn', (
   assert.equal(last(snaps(part)).player.carried, 2);
 });
 
-test('đèn: bán kính 2.0, chọn đèn gần nhất, bằng nhau thì id nhỏ hơn, bỏ qua đèn đã sáng', () => {
+test('đèn: bán kính 2.0, chọn đèn gần nhất, bằng nhau thì id nhỏ hơn, đèn sáng chưa đầy dầu cũng được chọn', () => {
   const sc = (l) => ({ ...quiet, player: { carried: 3 }, lanterns: l });
   assert.equal(events(run({ seed: 1, ticks: 2, scenario: sc([{ id: 'L1', pos: [0, 0, 2.01] }]), inputs: hold({ interact: true }) }), 'deposit').length, 0);
   assert.equal(events(run({ seed: 1, ticks: 2, scenario: sc([{ id: 'L1', pos: [0, 0, 2] }]), inputs: hold({ interact: true }) }), 'deposit').length, 1);
   const tie = run({ seed: 1, ticks: 2, scenario: sc([{ id: 'L3', pos: [1, 0, 0] }, { id: 'L2', pos: [-1, 0, 0] }]), inputs: hold({ interact: true }) });
   assert.equal(events(tie, 'deposit')[0].data.lantern_id, 'L2');
+  // [Ticket-03 thay thế] trước đây bỏ qua đèn đã sáng; nay đèn sáng nhưng chưa đầy dầu cũng được chọn (hao 1 tick => chưa đầy)
   const skip = run({ seed: 1, ticks: 2, scenario: sc([{ id: 'L1', pos: [0, 0, 0.5], lit: true }, { id: 'L2', pos: [0, 0, 1.5] }]), inputs: hold({ interact: true }) });
-  assert.equal(events(skip, 'deposit')[0].data.lantern_id, 'L2');
+  assert.equal(events(skip, 'refuel')[0].data.lantern_id, 'L1');
+  assert.equal(events(skip, 'deposit').length, 0);
 });
 
 test('interact chỉ kích hoạt khi false->true', () => {
@@ -128,29 +130,46 @@ test('interact chỉ kích hoạt khi false->true', () => {
   assert.equal(events(rows, 'deposit').length, 1);
 });
 
-test('thắng: tất cả đèn sáng, điểm = 100 + 10*mote + 2*giây + 50*lửa', () => {
+test('[Ticket-03] không còn thắng sớm: thắp đủ đèn không kết thúc Đêm', () => {
   const rows = run({
     seed: 1, ticks: 100,
     scenario: { ...quiet, time_left_s: 100, player: { carried: 10, flames: 2 }, lanterns: [{ id: 'L1', pos: [0, 0, 1] }, ...others] },
     inputs: hold({ interact: true }),
   });
-  assert.deepEqual(events(rows, 'game_over')[0].data, { result: 'won', reason: 'all_lit' });
-  const end = last(rows);
-  assert.equal(end.ticks, 1);
-  const secLeft = Math.floor(100 - 1 / 60);
-  assert.equal(end.score, 100 + 100 + 2 * secLeft + 50 * 2);
+  assert.equal(events(rows, 'lantern_lit').length, 1);
+  assert.equal(events(rows, 'game_over').length, 0);
+  assert.equal(last(rows).state, 'playing');
 });
 
-test('thắng đúng tick hết giờ vẫn là thắng; hết giờ không thắng là dawn', () => {
-  const win = run({
-    seed: 1, ticks: 100,
-    scenario: { ...quiet, time_left_s: 1 / 60, player: { carried: 10 }, lanterns: [{ id: 'L1', pos: [0, 0, 1] }, ...others] },
-    inputs: hold({ interact: true }),
+test('[Ticket-03] thắng khi sống tới bình minh với >= ceil(0.6 x đèn) đèn sáng; điểm bình minh', () => {
+  const rows = run({
+    seed: 1, ticks: 600,
+    scenario: { ...quiet, time_left_s: 2, player: { flames: 2 }, lanterns: [lit('L1', [0, 0, 60]), lit('L2', [0, 0, 61]), lit('L3', [0, 0, 62])] },
   });
-  assert.deepEqual(events(win, 'game_over')[0].data, { result: 'won', reason: 'all_lit' });
-  const dawn = run({ seed: 1, ticks: 500, scenario: { ...quiet, time_left_s: 1 } });
-  assert.deepEqual(events(dawn, 'game_over')[0].data, { result: 'lost', reason: 'dawn' });
-  assert.equal(last(dawn).ticks, 60);
+  assert.deepEqual(events(rows, 'game_over')[0].data, { result: 'won', reason: 'dawn_survived' });
+  assert.equal(last(rows).ticks, 120);
+  // 3 đèn: fuel 100 - 2 s = 98 => +50+98 mỗi đèn; 2 ngọn lửa => +100
+  assert.equal(last(rows).score, 3 * (50 + 98) + 2 * 50);
+});
+
+test('[Ticket-03] hết giờ mà đèn sáng dưới ngưỡng thì thua dawn; ngưỡng 3/5, 4/6, 5/7', () => {
+  const two = run({ seed: 1, ticks: 500, scenario: { ...quiet, time_left_s: 1, lanterns: [lit('L1', [0, 0, 60]), lit('L2', [0, 0, 61])] } });
+  assert.deepEqual(events(two, 'game_over')[0].data, { result: 'lost', reason: 'dawn' });
+  const three = run({ seed: 1, ticks: 500, scenario: { ...quiet, time_left_s: 1, lanterns: [lit('L1', [0, 0, 60]), lit('L2', [0, 0, 61]), lit('L3', [0, 0, 62])] } });
+  assert.equal(events(three, 'game_over')[0].data.result, 'won');
+  const lights = (n, k) => Array.from({ length: k }, (_, i) => lit(`L${i + 1}`, [0, 0, 60 + i]));
+  const n2 = (k) => events(run({ seed: 1, night: 2, ticks: 500, scenario: { ...quiet, time_left_s: 1, lanterns: lights(6, k) } }), 'game_over')[0].data.result;
+  assert.deepEqual([n2(3), n2(4)], ['lost', 'won']);
+  const n3 = (k) => events(run({ seed: 1, night: 3, ticks: 500, scenario: { ...quiet, time_left_s: 1, lanterns: lights(7, k) } }), 'game_over')[0].data.result;
+  assert.deepEqual([n3(4), n3(5)], ['lost', 'won']);
+});
+
+test('[Ticket-03] hết Ngọn Lửa luôn thua no_flames, kể cả ở tick bình minh', () => {
+  const rows = run({
+    seed: 1, ticks: 5,
+    scenario: { ...quiet, time_left_s: 1 / 60, player: { flames: 1 }, lanterns: [lit('L1', [0, 0, 60]), lit('L2', [0, 0, 61]), lit('L3', [0, 0, 62])], shades: [{ pos: [0.5, 1, 0], state: 'chase' }] },
+  });
+  assert.deepEqual(events(rows, 'game_over')[0].data, { result: 'lost', reason: 'no_flames' });
 });
 
 test('tất định: cùng seed/scenario/inputs ra output giống hệt', () => {

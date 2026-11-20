@@ -12,6 +12,11 @@ export const PAL = {
 
 const std = (color, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.9, ...extra });
 
+/** Chế độ mù màu: viền và mắt Bóng Mực #7A3CFF -> #00B3FF. */
+export function setColorblind(on) {
+  PAL.shadeRim = on ? 0x00b3ff : 0x7a3cff;
+}
+
 export function buildWorld(night) {
   const map = buildMap(night);
   const g = new THREE.Group();
@@ -105,9 +110,19 @@ export function makeLantern(l) {
   const ring = new THREE.Mesh(new THREE.RingGeometry(5.85, 6, 64), new THREE.MeshBasicMaterial({ color: PAL.lampOn, transparent: true, opacity: 0, side: THREE.DoubleSide }));
   ring.rotation.x = -Math.PI / 2;
   ring.position.y = 0.08;
-  grp.add(pole, lamp, core, light, ring);
+  // giấy rách (đèn tắt phân biệt không cần màu) + thanh dầu (đèn sáng)
+  const tear = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.35, 0.05), new THREE.MeshBasicMaterial({ color: PAL.sky }));
+  tear.position.set(0.55, 3.2, 0.7);
+  tear.rotation.z = 0.5;
+  const bar = new THREE.Group();
+  const barBg = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 0.22), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.6 }));
+  const barFill = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 0.14), new THREE.MeshBasicMaterial({ color: PAL.gold, transparent: true }));
+  barFill.position.z = 0.01;
+  bar.add(barBg, barFill);
+  bar.position.y = 4.9;
+  grp.add(pole, lamp, core, light, ring, tear, bar);
   grp.position.set(l.x, l.y, l.z);
-  return { grp, lamp, core, light, ring };
+  return { grp, lamp, core, light, ring, tear, bar, barFill };
 }
 
 export function makeMote() {
@@ -121,8 +136,14 @@ export function makeShade() {
   const grp = new THREE.Group();
   const body = new THREE.Mesh(new THREE.IcosahedronGeometry(0.9, 1), std(PAL.shade, { emissive: PAL.shadeRim, emissiveIntensity: 0.25 }));
   const edge = new THREE.Mesh(new THREE.IcosahedronGeometry(1.0, 1), new THREE.MeshBasicMaterial({ color: PAL.shadeRim, wireframe: true, transparent: true, opacity: 0.55 }));
+  const eyes = [-0.3, 0.3].map((x) => {
+    const e = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), new THREE.MeshBasicMaterial({ color: PAL.shadeRim }));
+    e.position.set(x, 0.2, 0.8);
+    grp.add(e);
+    return e;
+  });
   grp.add(body, edge);
-  return { grp, body, edge };
+  return { grp, body, edge, eyes };
 }
 
 export function makeDrifter() {

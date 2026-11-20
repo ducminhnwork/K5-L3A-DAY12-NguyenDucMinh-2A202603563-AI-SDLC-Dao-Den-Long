@@ -14,8 +14,13 @@
 - Số liệu chuẩn chỉ ở `src/sim/config.js`; bản đồ chỉ ở `src/sim/maps.js`. Web (`src/web/`) không được ghi vào trạng thái của Sim.
 - Lỗi agent hay mắc ở repo này: quên truyền tham số (ví dụ `--night`) từ CLI vào lõi; sai dấu/tick lệch 1 trong test. Luôn chạy `npm run proof` trước khi tag.
 
+## Quy tắc thêm ở Phase 3
+- Đổi luật cốt lõi (kiểu Ticket-03) thì viết ADR (`docs/adr/`) và changelog TRƯỚC, rồi mới sửa code/test. Test cũ sai vì luật mới: sửa hoặc thay kèm lý do trong `docs/CHANGELOG-phase-3.md`; không `skip`, không xoá âm thầm.
+- Nhiên liệu đèn là số nguyên theo 1/60 fuel (`U = 60`); chỉ làm tròn khi xuất snapshot. Vùng an toàn dùng `zoneOn(l)`, không dùng `l.lit`.
+- Bảng màu và chế độ mù màu chỉ ở `src/web/`; không đổi headless.
+
 ## Lệnh
-- `npm install` · `npm start` · `npm test` · `npm run proof` (sinh `docs/proof/phase-2/`)
+- `npm install` · `npm start` · `npm test` · `npm run proof` (sinh `docs/proof/phase-3/`, gồm hồi quy scenario Phase 2)
 - Headless: `node src/headless.js --seed 1 --night 1|2|3 --ticks 600 --out out.jsonl`
 
 ## Kỹ năng

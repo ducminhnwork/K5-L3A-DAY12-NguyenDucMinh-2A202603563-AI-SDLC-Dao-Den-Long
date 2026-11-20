@@ -9,7 +9,7 @@
     "build": "vite build",
     "headless": "node src/headless.js",
     "test": "node --test",
-    "proof": "node scripts/make-proof.js 2"
+    "proof": "node scripts/make-proof.js 3"
   },
   "dependencies": {
     "three": "^0.170.0"

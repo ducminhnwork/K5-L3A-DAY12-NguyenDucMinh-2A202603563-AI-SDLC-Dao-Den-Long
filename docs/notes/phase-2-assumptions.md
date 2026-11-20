@@ -22,3 +22,5 @@ Những chỗ ticket không nói rõ, tôi tự chọn (đổi được ở Phas
 
 ## Web (không ảnh hưởng headless)
 Chuỗi Menu → giới thiệu Đêm (lời Ông Đăng) → chơi → kết quả → Đêm kế → Bình Minh; tạm dừng Esc/P; cài đặt lưu localStorage; âm thanh tổng hợp bằng WebAudio (không dùng file ngoài); HUD theo mô tả; mũi tên chỉ đèn chưa sáng. Điều khiển: WASD, Space nhảy, **Shift** lướt, E nạp đèn, F toả sáng.
+
+> Cập nhật Phase 3: thời lượng, điểm, luật thắng và vùng an toàn đã đổi theo Ticket-03; xem `docs/notes/phase-3-assumptions.md` và `docs/CHANGELOG-phase-3.md`.

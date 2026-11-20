@@ -3,14 +3,14 @@ import { Sim, defaultInput } from '../sim/sim.js';
 import { TUNING, RULES } from '../sim/config.js';
 import { loadSettings, saveSettings } from './settings.js';
 import { sfx, startMusic, stopMusic, applyVolume } from './audio.js';
-import { PAL, buildWorld, makeMay, makeLantern, makeMote, makeShade, makeDrifter, makeCharm } from './world.js';
+import { PAL, setColorblind, buildWorld, makeMay, makeLantern, makeMote, makeShade, makeDrifter, makeCharm } from './world.js';
 
 const HZ = 60;
 const $ = (id) => document.getElementById(id);
 const INTRO = {
-  1: ['Đêm 1 — Đảo Bến', 'Ông Đăng nói: "Bến tàu tối đã lâu rồi. Gom đom đóm, thắp đủ năm ngọn đèn trước khi trời sáng, cháu nhé."'],
-  2: ['Đêm 2 — Đảo Cau', 'Ông Đăng nói: "Hai hòn đảo, một cây cầu tre không lan can. Bục vàng sẽ tung cháu qua bên kia. Coi chừng Gió Lạc, nó thích đom đóm của cháu."'],
-  3: ['Đêm 3 — Đảo Chuông', 'Ông Đăng nói: "Đảo Chuông có ba tầng và gió mạnh. Bóng Mực nhanh hơn rồi. Thắp bảy ngọn đèn là bình minh sẽ tới."'],
+  1: ['Đêm 1 — Đảo Bến', 'Ông Đăng nói: "Đèn cạn dầu rồi, cháu ơi. Thắp đèn, châm dầu, và giữ ít nhất ba ngọn sáng tới bình minh nhé."'],
+  2: ['Đêm 2 — Đảo Cau', 'Ông Đăng nói: "Hai hòn đảo, một cây cầu tre không lan can. Bục vàng sẽ tung cháu qua bên kia. Giữ ít nhất bốn ngọn sáng tới bình minh, và coi chừng Gió Lạc."'],
+  3: ['Đêm 3 — Đảo Chuông', 'Ông Đăng nói: "Đảo Chuông có ba tầng và gió mạnh. Bóng Mực nhanh hơn rồi. Giữ ít nhất năm trong bảy ngọn sáng tới bình minh, Bóng Mực đang hút dầu đèn."'],
 };
 
 // ---------- three.js ----------
@@ -116,12 +116,20 @@ function pause(on) {
   show(on ? 'pause' : null);
   if (on && document.pointerLockElement) document.exitPointerLock();
 }
+function applyColorblind() {
+  const cb = loadSettings().colorblind;
+  setColorblind(cb);
+  document.documentElement.style.setProperty('--danger', cb ? '#FFFFFF' : '#FF5A5F');
+  document.body.classList.toggle('cb', !!cb);
+}
+applyColorblind();
 let settingsFrom = 'menu';
 function openSettings(from) {
   settingsFrom = from;
   const s = loadSettings();
   $('setVol').value = s.volume;
   $('setSens').value = s.sens;
+  $('setCb').checked = !!s.colorblind;
   show('settings');
 }
 $('btnPlay').onclick = () => { totalScore = 0; openIntro(1); };
@@ -129,6 +137,7 @@ $('btnSettings').onclick = () => openSettings('menu');
 $('btnPauseSettings').onclick = () => openSettings('pause');
 $('btnSettingsBack').onclick = () => show(settingsFrom);
 $('setVol').oninput = (e) => { const s = loadSettings(); saveSettings({ ...s, volume: Number(e.target.value) }); applyVolume(); };
+$('setCb').onchange = (e) => { saveSettings({ ...loadSettings(), colorblind: e.target.checked }); applyColorblind(); };
 $('setSens').oninput = (e) => saveSettings({ ...loadSettings(), sens: Number(e.target.value) });
 $('btnStart').onclick = () => startNight(night);
 $('btnResume').onclick = () => pause(false);
@@ -157,7 +166,7 @@ function finishNight() {
     }
   }
   $('resTitle').textContent = won ? `Đêm ${night} — Thắng!` : sim.events.some((e) => e.data?.reason === 'no_flames') ? 'Ngọn lửa đã tắt…' : 'Bình minh đến quá sớm…';
-  $('resText').textContent = won ? `Điểm đêm này: ${sim.score}. Tổng điểm: ${totalScore}.` : `Điểm đêm này: ${sim.score}. Chơi lại Đêm ${night} nhé.`;
+  $('resText').textContent = won ? `Bình minh tới, đảo vẫn sáng. Điểm đêm này: ${sim.score}. Tổng điểm: ${totalScore}.` : `Điểm đêm này: ${sim.score}. Chơi lại Đêm ${night} nhé.`;
   $('btnNext').textContent = won ? 'Đêm kế tiếp' : 'Chơi lại Đêm';
   show('result');
 }
@@ -230,7 +239,8 @@ function frame(now) {
 function onEvent(e) {
   switch (e.name) {
     case 'mote_picked': case 'charm_picked': sfx.pick(); break;
-    case 'lantern_lit': sfx.light(); break;
+    case 'lantern_lit': case 'refuel': sfx.light(); break;
+    case 'lantern_out': sfx.hit(); break;
     case 'pulse': sfx.pulse(); break;
     case 'player_hit': sfx.hit(); break;
     case 'dash': sfx.dash(); break;
@@ -270,12 +280,26 @@ function draw(t) {
 
   for (const l of sim.lanterns) {
     const lv = v.lanterns.get(l.id);
+    const low = l.lit && l.fuel < TUNING.low_fuel_threshold * HZ;
+    const blink = low ? (Math.floor(t * 2) % 2 === 0 ? 1 : 0.25) : 1; // nhấp nháy chậm 1 Hz khi sắp cạn
     lv.lamp.material.color.setHex(l.lit ? PAL.lampOn : PAL.lampOff);
     lv.lamp.material.emissive.setHex(l.lit ? PAL.lampOn : 0x000000);
-    lv.core.material.opacity = l.lit ? 0.9 : 0;
-    lv.light.intensity = l.lit ? 2.4 + 0.3 * Math.sin(t * 3 + l.x) : 0;
-    lv.ring.material.opacity = l.lit ? 0.45 : l.deposited > 0 ? 0.15 : 0;
+    lv.lamp.material.emissiveIntensity = blink;
+    lv.lamp.scale.y = l.lit ? 1 : 0.8; // đèn tắt bị xẹp 20%
+    lv.tear.visible = !l.lit; // và có vết rách
+    lv.core.material.opacity = l.lit ? 0.9 * blink : 0;
+    lv.light.intensity = l.lit ? (2.4 + 0.3 * Math.sin(t * 3 + l.x)) * blink : 0;
+    lv.ring.material.opacity = l.lit && l.fuel >= TUNING.low_fuel_threshold * HZ ? 0.45 : 0; // vùng an toàn chỉ khi fuel >= 30
     lv.grp.rotation.z = Math.sin(t * 1.2 + l.x) * 0.02;
+    lv.bar.visible = l.lit;
+    if (l.lit) {
+      const f = Math.max(0.001, l.fuel / (TUNING.fuel_max * HZ));
+      lv.barFill.scale.x = f;
+      lv.barFill.position.x = -0.75 * (1 - f);
+      lv.barFill.material.color.setHex(low ? 0xffffff : PAL.gold);
+      lv.barFill.material.opacity = blink;
+      lv.bar.lookAt(camera.position);
+    }
   }
   sync(v.motes, sim.motes, makeMote, (m, d) => m.position.set(d.x, d.y + 0.7 + 0.2 * Math.sin(t * 3 + d.x), d.z), v.root);
   sync(v.shades, sim.shades, makeShade, (s, d) => {
@@ -283,6 +307,8 @@ function draw(t) {
     const stun = d.state === 'stunned';
     s.body.material.color.setHex(stun ? PAL.shadeStun : PAL.shade);
     s.body.material.emissive.setHex(stun ? 0x000000 : PAL.shadeRim);
+    s.edge.material.color.setHex(PAL.shadeRim);
+    for (const e of s.eyes) e.material.color.setHex(PAL.shadeRim);
     const sc = d.state === 'spawning' ? 1 - d.ticks / RULES.spawning_ticks : 1;
     s.grp.scale.setScalar(Math.max(0.05, sc));
     s.edge.rotation.y = t;
@@ -325,15 +351,20 @@ function updateHud(t) {
   const clock = $('clock');
   clock.textContent = `${String(Math.floor(left / 60)).padStart(2, '0')}:${String(left % 60).padStart(2, '0')}`;
   clock.classList.toggle('low', left <= 30);
+  clock.textContent = (loadSettings().colorblind && left <= 30 ? '⚠ ' : '') + clock.textContent;
   if (left <= 10 && left !== lastSecond && sim.state === 'playing') sfx.tick();
   lastSecond = left;
-  $('lampcount').textContent = `🏮 ${sim.lanterns.filter((l) => l.lit).length}/${sim.lanterns.length}`;
+  const need = Math.ceil(TUNING.win_ratio * sim.lanterns.length - 1e-9);
+  $('lampcount').textContent = `🏮 ${sim.lanterns.filter((l) => l.lit).length}/${sim.lanterns.length} (cần ${need})`;
   $('score').textContent = `★ ${sim.score}`;
   const bar = $('motes');
-  if (bar.childElementCount !== TUNING.carry_capacity) {
-    bar.innerHTML = '<i></i>'.repeat(TUNING.carry_capacity);
-  }
-  [...bar.children].forEach((el, i) => el.classList.toggle('on', i < p.carried));
+  if (bar.childElementCount !== TUNING.capacity_max) bar.innerHTML = '<i></i>'.repeat(TUNING.capacity_max);
+  const cap = sim.capacity;
+  [...bar.children].forEach((el, i) => {
+    el.classList.toggle('on', i < p.carried);
+    el.classList.toggle('off', i >= cap);
+  });
+  $('capacity').textContent = `${p.carried}/${cap}`;
   const fill = (id, cur, max) => { $(id).querySelector('.fill').style.height = `${max > 0 ? Math.min(100, (cur / max) * 100) : 0}%`; };
   fill('cdDash', p.dashCd, Math.round(TUNING.dash_cooldown_s * HZ));
   fill('cdPulse', p.pulseCd, Math.round(TUNING.pulse_cooldown_s * HZ));
@@ -345,10 +376,12 @@ function updateHud(t) {
   let nearest = null;
   let nd = Infinity;
   for (const l of sim.lanterns) {
-    if (l.lit) continue;
     const d = Math.hypot(l.x - p.x, l.z - p.z);
-    if (d < nd) { nd = d; nearest = l; }
-    if (d <= TUNING.interact_radius) prompt = `E — Nạp ánh sáng (${l.deposited}/${TUNING.lantern_cost})`;
+    if (!l.lit && d < nd) { nd = d; nearest = l; }
+    if (d > TUNING.interact_radius || (l.lit && l.fuel >= TUNING.fuel_max * HZ)) continue;
+    prompt = l.lit
+      ? `E — Châm dầu (${Math.round(l.fuel / HZ)}/${TUNING.fuel_max})`
+      : `E — Nạp ánh sáng (${l.deposited}/${l.everLit ? TUNING.relight_cost : TUNING.lantern_cost})`;
   }
   const pr = $('prompt');
   pr.style.display = prompt ? 'block' : 'none';

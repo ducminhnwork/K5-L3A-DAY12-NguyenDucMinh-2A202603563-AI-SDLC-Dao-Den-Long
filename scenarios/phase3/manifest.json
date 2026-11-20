@@ -1,0 +1,373 @@
+[
+ {
+  "name": "refuel",
+  "feature": "Châm dầu",
+  "night": 1,
+  "ticks": 10,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "player": {
+    "carried": 9
+   },
+   "lanterns": [
+    {
+     "id": "L1",
+     "pos": [
+      0,
+      0,
+      1
+     ],
+     "lit": true,
+     "fuel": 33
+    }
+   ]
+  },
+  "inputs": {
+   "frames": [
+    {
+     "tick": 0,
+     "interact": true
+    }
+   ]
+  },
+  "expect": {
+   "event": "refuel"
+  }
+ },
+ {
+  "name": "lantern-out",
+  "feature": "Hết dầu",
+  "night": 1,
+  "ticks": 130,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "lanterns": [
+    {
+     "id": "L1",
+     "pos": [
+      0,
+      0,
+      9
+     ],
+     "lit": true,
+     "fuel": 1
+    }
+   ]
+  },
+  "inputs": {
+   "frames": []
+  },
+  "expect": {
+   "event": "lantern_out"
+  }
+ },
+ {
+  "name": "relight",
+  "feature": "Thắp lại (5 đom đóm) + sức chứa",
+  "night": 1,
+  "ticks": 10,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "player": {
+    "carried": 5
+   },
+   "lanterns": [
+    {
+     "id": "L1",
+     "pos": [
+      0,
+      0,
+      1
+     ],
+     "ever_lit": true
+    }
+   ]
+  },
+  "inputs": {
+   "frames": [
+    {
+     "tick": 0,
+     "interact": true
+    }
+   ]
+  },
+  "expect": {
+   "event": "lantern_lit",
+   "capacity": 12
+  }
+ },
+ {
+  "name": "drain",
+  "feature": "Bóng Mực hút dầu",
+  "night": 1,
+  "ticks": 200,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "player": {
+    "pos": [
+     0,
+     0,
+     -30
+    ],
+    "flames": 9
+   },
+   "lanterns": [
+    {
+     "id": "L1",
+     "pos": [
+      -8,
+      0,
+      0
+     ],
+     "lit": true,
+     "fuel": 25
+    }
+   ],
+   "shades": [
+    {
+     "id": "S1",
+     "pos": [
+      -8,
+      1,
+      8
+     ],
+     "state": "wander"
+    }
+   ]
+  },
+  "inputs": {
+   "frames": []
+  },
+  "expect": {
+   "event": "fuel_drain"
+  }
+ },
+ {
+  "name": "dawn-win",
+  "feature": "Thắng ở bình minh",
+  "night": 1,
+  "ticks": 400,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "time_left_s": 2,
+   "player": {
+    "flames": 2
+   },
+   "lanterns": [
+    {
+     "id": "L1",
+     "pos": [
+      0,
+      0,
+      60
+     ],
+     "lit": true
+    },
+    {
+     "id": "L2",
+     "pos": [
+      0,
+      0,
+      61
+     ],
+     "lit": true
+    },
+    {
+     "id": "L3",
+     "pos": [
+      0,
+      0,
+      62
+     ],
+     "lit": true
+    }
+   ]
+  },
+  "inputs": {
+   "frames": []
+  },
+  "expect": {
+   "event": "game_over",
+   "end_state": "won",
+   "reason": "dawn_survived"
+  }
+ },
+ {
+  "name": "dawn-lose",
+  "feature": "Thua khi dưới ngưỡng",
+  "night": 1,
+  "ticks": 400,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "time_left_s": 2,
+   "lanterns": [
+    {
+     "id": "L1",
+     "pos": [
+      0,
+      0,
+      60
+     ],
+     "lit": true
+    },
+    {
+     "id": "L2",
+     "pos": [
+      0,
+      0,
+      61
+     ],
+     "lit": true
+    }
+   ]
+  },
+  "inputs": {
+   "frames": []
+  },
+  "expect": {
+   "event": "game_over",
+   "end_state": "lost",
+   "reason": "dawn"
+  }
+ },
+ {
+  "name": "no-early-win",
+  "feature": "Không còn thắng sớm",
+  "night": 1,
+  "ticks": 100,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "time_left_s": 100,
+   "lanterns": [
+    {
+     "id": "L2",
+     "pos": [
+      0,
+      0,
+      60
+     ],
+     "lit": true
+    },
+    {
+     "id": "L3",
+     "pos": [
+      0,
+      0,
+      61
+     ],
+     "lit": true
+    },
+    {
+     "id": "L4",
+     "pos": [
+      0,
+      0,
+      62
+     ],
+     "lit": true
+    },
+    {
+     "id": "L5",
+     "pos": [
+      0,
+      0,
+      63
+     ],
+     "lit": true
+    },
+    {
+     "id": "L1",
+     "pos": [
+      0,
+      0,
+      58
+     ],
+     "lit": true
+    }
+   ]
+  },
+  "inputs": {
+   "frames": []
+  },
+  "expect": {
+   "no_event": "game_over",
+   "end_state": "playing"
+  }
+ },
+ {
+  "name": "no-flames-at-dawn",
+  "feature": "Hết lửa thua trước ở tick bình minh",
+  "night": 1,
+  "ticks": 10,
+  "scenario": {
+   "random_motes": false,
+   "random_shades": false,
+   "random_drifters": false,
+   "time_left_s": 0.0167,
+   "player": {
+    "flames": 1
+   },
+   "lanterns": [
+    {
+     "id": "L1",
+     "pos": [
+      0,
+      0,
+      60
+     ],
+     "lit": true
+    },
+    {
+     "id": "L2",
+     "pos": [
+      0,
+      0,
+      61
+     ],
+     "lit": true
+    },
+    {
+     "id": "L3",
+     "pos": [
+      0,
+      0,
+      62
+     ],
+     "lit": true
+    }
+   ],
+   "shades": [
+    {
+     "pos": [
+      0.5,
+      1,
+      0
+     ],
+     "state": "chase"
+    }
+   ]
+  },
+  "inputs": {
+   "frames": []
+  },
+  "expect": {
+   "event": "game_over",
+   "end_state": "lost",
+   "reason": "no_flames"
+  }
+ }
+]

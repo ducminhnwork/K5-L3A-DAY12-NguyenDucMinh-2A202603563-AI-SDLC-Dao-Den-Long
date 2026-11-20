@@ -1,5 +1,5 @@
 // Sinh bằng chứng thật cho phase: chạy toàn bộ test + từng scenario headless và KIỂM TRA kết quả mong đợi.
-// Dùng: node scripts/make-proof.js [phase]   (mặc định 2). Thoát khác 0 nếu có gì sai.
+// Dùng: node scripts/make-proof.js [phase]   (2 hoặc 3; phase 3 chạy lại cả manifest phase 2 để kiểm hồi quy). Thoát khác 0 nếu có gì sai.
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -14,34 +14,39 @@ fs.writeFileSync(`${dir}/test-output.txt`, t.stdout + t.stderr);
 if (t.status !== 0) failed = true;
 const summary = [`tests exit=${t.status}`];
 
-if (phase === '2') {
-  const manifest = JSON.parse(fs.readFileSync('scenarios/phase2/manifest.json', 'utf8'));
+function runManifest(file, tag) {
+  const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
   fs.mkdirSync(`${dir}/runs`, { recursive: true });
   for (const m of manifest) {
-    const sc = `${dir}/runs/${m.name}.scenario.json`;
-    const inp = `${dir}/runs/${m.name}.inputs.json`;
-    const out = `${dir}/runs/${m.name}.jsonl`;
-    fs.writeFileSync(sc, JSON.stringify(m.scenario));
-    fs.writeFileSync(inp, JSON.stringify(m.inputs));
-    const r = spawnSync('node', ['src/headless.js', '--seed', '1', '--night', String(m.night), '--scenario', sc, '--inputs', inp, '--ticks', String(m.ticks), '--out', out, '--snapshot-every', '10'], { encoding: 'utf8' });
+    const base = `${dir}/runs/${tag}-${m.name}`;
+    fs.writeFileSync(`${base}.scenario.json`, JSON.stringify(m.scenario));
+    fs.writeFileSync(`${base}.inputs.json`, JSON.stringify(m.inputs));
+    const r = spawnSync('node', ['src/headless.js', '--seed', '1', '--night', String(m.night), '--scenario', `${base}.scenario.json`, '--inputs', `${base}.inputs.json`, '--ticks', String(m.ticks), '--out', `${base}.jsonl`, '--snapshot-every', '10'], { encoding: 'utf8' });
     let ok = r.status === 0;
     let why = '';
     if (ok) {
-      const rows = fs.readFileSync(out, 'utf8').trim().split('\n').map((l) => JSON.parse(l));
-      const ev = (n) => rows.some((x) => x.type === 'event' && x.name === n);
+      const rows = fs.readFileSync(`${base}.jsonl`, 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+      const ev = (n) => rows.find((x) => x.type === 'event' && x.name === n);
       const snaps = rows.filter((x) => x.type === 'snapshot');
       const end = rows.at(-1);
       const e = m.expect;
       if (e.event && !ev(e.event)) { ok = false; why = `thiếu sự kiện ${e.event}`; }
       if (e.no_event && ev(e.no_event)) { ok = false; why = `không được có sự kiện ${e.no_event}`; }
       if (e.end_state && end.state !== e.end_state) { ok = false; why = `end.state=${end.state}`; }
+      if (e.reason && ev('game_over')?.data.reason !== e.reason) { ok = false; why = `reason=${ev('game_over')?.data.reason}`; }
+      if (e.capacity !== undefined && snaps.at(-1).player.capacity !== e.capacity) { ok = false; why = `capacity=${snaps.at(-1).player.capacity}`; }
       if (e.min_x !== undefined && snaps.at(-1).player.pos[0] < e.min_x) { ok = false; why = `x=${snaps.at(-1).player.pos[0]}`; }
       if (e.end_y !== undefined && Math.abs(snaps.at(-1).player.pos[1] - e.end_y) > 0.01) { ok = false; why = `y=${snaps.at(-1).player.pos[1]}`; }
       if (e.wind_active_at !== undefined && !snaps.find((s) => s.tick === e.wind_active_at)?.wind.active) { ok = false; why = 'gió chưa nổi'; }
     } else why = `exit=${r.status} ${r.stderr}`;
     if (!ok) failed = true;
-    summary.push(`${ok ? 'PASS' : 'FAIL'} ${m.name} (${m.feature}) ${why}`);
+    summary.push(`${ok ? 'PASS' : 'FAIL'} [${tag}] ${m.name} (${m.feature}) ${why}`);
   }
+}
+
+if (phase === '2' || phase === '3') {
+  runManifest('scenarios/phase2/manifest.json', 'p2');
+  if (phase === '3') runManifest('scenarios/phase3/manifest.json', 'p3');
   // tất định: chạy hai lần cùng đầu vào, so từng byte
   const a = `${dir}/runs/determinism-a.jsonl`;
   const b = `${dir}/runs/determinism-b.jsonl`;
@@ -49,7 +54,7 @@ if (phase === '2') {
   const same = fs.readFileSync(a, 'utf8') === fs.readFileSync(b, 'utf8');
   if (!same) failed = true;
   summary.push(`${same ? 'PASS' : 'FAIL'} determinism (night 3, seed 7, 3000 tick)`);
-  // hiệu năng: một Đêm đầy đủ 21600 tick (Mây nhiều lửa để chạy hết giờ)
+  // hiệu năng: một Đêm đầy đủ (Mây nhiều lửa để chạy hết giờ)
   fs.writeFileSync(`${dir}/runs/perf.scenario.json`, JSON.stringify({ player: { flames: 99 }, time_left_s: 400 }));
   for (const n of [1, 2, 3]) {
     const t0 = Date.now();

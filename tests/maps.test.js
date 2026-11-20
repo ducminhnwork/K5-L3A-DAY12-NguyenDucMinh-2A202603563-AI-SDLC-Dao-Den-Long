@@ -59,19 +59,19 @@ test('Đêm 2: lướt giữa không trung vẫn được, giữ nguyên độ c
   assert.ok(s[23].player.vel[0] > 20); // vận tốc phóng được giữ lại
 });
 
-test('Đêm 2: thời lượng 330 s, Bóng Mực sinh mỗi 420 tick, tối đa 8', () => {
+test('Đêm 2: thời lượng 270 s, Bóng Mực sinh mỗi 420 tick, tối đa 8', () => {
   const rows = run({ seed: 3, night: 2, ticks: 1300, scenario: { random_motes: false, random_drifters: false, player: { flames: 99 } } });
   assert.deepEqual(events(rows, 'shade_spawned').map((e) => e.tick), [300, 300, 720, 1140]);
-  assert.equal(snaps(run({ seed: 1, night: 2, ticks: 0 }))[0].time_left_s, 330);
+  assert.equal(snaps(run({ seed: 1, night: 2, ticks: 0 }))[0].time_left_s, 270);
   const cap = run({ seed: 3, night: 2, ticks: 12000, scenario: { random_motes: false, random_drifters: false, player: { flames: 99 }, time_left_s: 500 } });
   assert.ok(last(snaps(cap)).shades.length <= 8);
 });
 
-test('Đêm 3: 7 đèn, 30 điểm đom đóm (20 ban đầu), thời lượng 360 s, Bóng Mực 4.5 m/s', () => {
+test('Đêm 3: 7 đèn, 30 điểm đom đóm (20 ban đầu), thời lượng 300 s, Bóng Mực 4.5 m/s', () => {
   const s0 = snaps(run({ seed: 1, night: 3, ticks: 0 }))[0];
   assert.equal(s0.lanterns.length, 7);
   assert.equal(s0.motes.length, 20);
-  assert.equal(s0.time_left_s, 360);
+  assert.equal(s0.time_left_s, 300);
   assert.deepEqual(s0.lanterns[0].pos, [0, 6, 6]);
   const rows = run({ seed: 1, night: 3, ticks: 60, scenario: { ...quiet, player: { pos: [0, 0, -30], flames: 99 }, shades: [{ id: 'S1', pos: [0, 1, -20], state: 'chase' }] } });
   assert.ok(near(-20 - snaps(rows)[1].shades[0].pos[2], 0.075, 0.002));

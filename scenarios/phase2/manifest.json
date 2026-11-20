@@ -374,7 +374,7 @@
  },
  {
   "name": "win-night1",
-  "feature": "Thắng Đêm",
+  "feature": "Thắp đèn (Ticket-03: không còn thắng sớm; xem scenarios/phase3)",
   "night": 1,
   "ticks": 10,
   "scenario": {
@@ -442,8 +442,9 @@
    ]
   },
   "expect": {
-   "event": "game_over",
-   "end_state": "won"
+   "event": "lantern_lit",
+   "no_event": "game_over",
+   "end_state": "playing"
   }
  }
 ]

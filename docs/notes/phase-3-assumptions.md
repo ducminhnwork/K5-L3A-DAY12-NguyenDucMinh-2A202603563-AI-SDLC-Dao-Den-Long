@@ -1,0 +1,13 @@
+# Giả định Phase 3 (Ticket-03)
+- **Thứ tự dầu:** bước 2 trừ hao và hút, đèn fuel ≤ 0 tắt ngay; bước 5 tương tác thấy dầu đã trừ của tick đó. Hệ quả: đèn không bao giờ "đầy" đúng 100 lúc tương tác (đã hao 1 đơn vị), nên tương tác luôn châm được 1 đom đóm nếu đang mang.
+- **Đèn tắt có `deposited` dở dang:** giữ tới khi thắp; thắp lần đầu cần tổng 10, thắp lại 5 (tính theo `ever_lit` lúc đó).
+- **Lantern vừa thắp** có `deposited = chi phí` cho tới khi tắt (rồi về 0).
+- **Tốc độ Bóng wander tới đèn:** đèn yếu 4.0 m/s (như tốc độ Bóng), đèn tắt 2 m/s; dừng cách đèn tắt 1.5 m. Ticket không nêu.
+- **Bóng ở `drain` không gây sát thương** (chỉ `wander`/`chase` mới chạm); khi Mây vào 6 m nó thành `chase` rồi mới chạm được.
+- **Điểm Tỏa Sáng trúng Bóng đang drain** là tổng +15 (không cộng thêm +5).
+- **`fuel_drain`** phát mỗi 60 tick hút của từng Bóng (đếm theo Bóng, bắt đầu từ lúc vào drain); `fuel` là dầu còn lại của đèn lúc đó (1 chữ số thập phân).
+- **`target_lantern_id`** trong scenario đặt mục tiêu ban đầu của Bóng (dùng cho `drain`); ở `wander` mục tiêu được tính lại mỗi tick. Snapshot ghi `null` khi không có.
+- **Đèn đặt `fuel` mà không có `lit`** thì `lit = fuel > 0`; `ever_lit` mặc định bằng `lit`.
+- **Ngưỡng thắng** tính trên đèn có `lit == true` (fuel > 0) ở tick cuối.
+- **Bảng điểm** `tuning.score`: tôi đặt tên khoá `per_relight`, `per_stun_draining`, `per_lit_lantern_dawn` (ticket không nêu tên khoá).
+- **Web:** thanh dầu luôn quay về phía camera; đèn tắt vẫn có `ring` an toàn ẩn; vùng an toàn chỉ vẽ khi fuel ≥ 30.

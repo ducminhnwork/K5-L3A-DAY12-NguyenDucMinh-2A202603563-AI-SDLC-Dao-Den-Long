@@ -1,0 +1,1 @@
+{"random_motes":false,"random_shades":false,"random_drifters":false,"player":{"carried":10,"flames":9},"lanterns":[{"id":"L1","pos":[0,0,1]},{"id":"L2","pos":[0,0,60],"lit":true},{"id":"L3","pos":[0,0,61],"lit":true},{"id":"L4","pos":[0,0,62],"lit":true},{"id":"L5","pos":[0,0,63]}],"shades":[{"id":"S1","pos":[0.5,1,0],"state":"chase"}]}
